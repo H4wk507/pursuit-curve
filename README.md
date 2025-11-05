@@ -30,9 +30,9 @@ or just inside VSCode with correct venv.
   - dx/dt = v * (target - position) / dist(target, position)
 
 2. Analiza matematycznych strategii pościgu
-  - Pure pursuit (pościg bezpośredni) - kierunek wprost na cel
-  - Constant bearing (stały namiar) - prowadzi do logarytmicznej spirali
-  - Proporcjonalna nawigacja - kierunek proporcjonalny do zmiany kąta
+  - [X] Pure pursuit (pościg bezpośredni) - kierunek wprost na cel
+  - [X] Constant bearing (stały namiar) - prowadzi do logarytmicznej spirali
+  - [X] Proporcjonalna nawigacja - kierunek proporcjonalny do zmiany kąta
   - Porównanie efektywności i czasu pościgu dla różnych strategii
 
 3. Analiza optymalności trajektorii
