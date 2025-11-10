@@ -2,13 +2,12 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
-from pursuit_curve.continuous import (
-    run_continuous_simulation,
-    animate_continuous_pursuit,
-    ContinuousTargetCircleStrategy,
+from pursuit_curve.common import Point2D, run_continuous_simulation
+from pursuit_curve.d2.continuous import (
     ContinuousConstantBearing,
+    ContinuousTargetCircleStrategy,
+    animate_continuous_pursuit,
 )
-from pursuit_curve.common import Point2D
 
 initial_state = [15.0, 0.0, 5.0, 0.0]
 strategy = ContinuousConstantBearing(
