@@ -2,3 +2,7 @@
 .ipynb_checkpoints/
 *.mp4
 __pycache__/
+*.aux
+*.log
+*.out
+*.toc

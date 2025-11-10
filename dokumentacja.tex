@@ -1,0 +1,127 @@
+\documentclass[12pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[polish]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{graphicx}
+\usepackage{geometry}
+\usepackage{hyperref}
+\usepackage{float}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{booktabs}
+
+\geometry{
+    left=2.5cm,
+    right=2.5cm,
+    top=2.5cm,
+    bottom=2.5cm
+}
+
+\lstset{
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    commentstyle=\color{gray},
+    keywordstyle=\color{blue},
+    stringstyle=\color{red}
+}
+
+\begin{document}
+
+\begin{flushright}
+Gliwice, \today
+\end{flushright}
+
+\vspace{1cm}
+
+\begin{center}
+{\Large \textbf{Modelowanie matematyczne}}\\[0.5cm]
+{\Large Dokumentacja projektu końcowego}\\[1cm]
+
+{\large \textbf{Tytuł:} Krzywa pogoni}\\[0.5cm]
+
+{\large \textbf{Autorzy:} Skowroński Piotr, Czuba Krzysztof}\\[0.3cm]
+
+{\large \textbf{Kierunek:} Informatyka, studia 2 stopnia (sem. II)}
+\end{center}
+
+\vspace{1cm}
+
+\tableofcontents
+\newpage
+
+\section{Cel zadania}
+
+Celem projektu jest implementacja i analiza różnych strategii pościgu (pursuit curves) w przestrzeni 2D, 3D oraz n-wymiarowej. Projekt obejmuje:
+
+\begin{itemize}
+    \item Implementację klasycznych strategii pościgu: Direct Pursuit, Constant Bearing, Proportional Navigation
+    \item Rozwiązanie numeryczne równań różniczkowych opisujących ruch ścigającego i celu
+    \item Analizę zachowania strategii dla różnych trajektorii celu (linia prosta, okrąg, helisa, krzywe Lissajous)
+    \item Uogólnienie problemu na przestrzeń n-wymiarową i badanie wpływu liczby wymiarów
+    \item Wizualizację trajektorii w 2D i 3D oraz analizę numeryczną dla wyższych wymiarów
+\end{itemize}
+
+\section{Opis teoretyczny}
+
+\subsection{Wprowadzenie do problemu pościgu}
+
+Problem pościgu (pursuit problem) polega na określeniu trajektorii ścigającego (pursuer), który dąży do przechwycenia poruszającego się celu (target). W zależności od zastosowanej strategii, ścigający może celować bezpośrednio w aktualną pozycję celu (Direct Pursuit), utrzymywać stały kąt namiarowania (Constant Bearing), lub stosować bardziej zaawansowane metody jak nawigacja proporcjonalna (Proportional Navigation).
+
+Problemy pościgu mają szerokie zastosowania praktyczne:
+\begin{itemize}
+    \item Nawigacja rakiet i pocisków naprowadzanych
+    \item Systemy autonomiczne (drony, roboty)
+    \item Nawigacja morska i lotnicza
+    \item Gry komputerowe (AI przeciwników)
+    \item Optymalizacja trajektorii
+\end{itemize}
+
+\subsection{Klasyczna krzywa pościgu (Direct Pursuit)}
+
+\subsubsection{Model matematyczny 2D}
+
+W najprostszym przypadku Direct Pursuit, ścigający w każdej chwili celuje bezpośrednio w aktualną pozycję celu. Stan układu w przestrzeni dwuwymiarowej $\mathbb{R}^2$ opisany jest wektorami:
+
+\begin{itemize}
+    \item $\mathbf{p}(t) = [p_x(t), p_y(t)]^T$ -- pozycja ścigającego
+    \item $\mathbf{t}(t) = [t_x(t), t_y(t)]^T$ -- pozycja celu
+\end{itemize}
+
+Równania różniczkowe opisujące ruch ścigającego w strategii Direct Pursuit mają postać:
+
+\begin{equation}
+\frac{d\mathbf{p}}{dt} = v_p \cdot \frac{\mathbf{t} - \mathbf{p}}{\|\mathbf{t} - \mathbf{p}\|}
+\label{eq:direct_pursuit_2d}
+\end{equation}
+
+gdzie:
+\begin{itemize}
+    \item $v_p > 0$ -- prędkość skalarna ścigającego [m/s]
+    \item $\mathbf{t} - \mathbf{p}$ -- wektor skierowany od ścigającego do celu
+    \item $\|\mathbf{t} - \mathbf{p}\| = \sqrt{(t_x - p_x)^2 + (t_y - p_y)^2}$ -- odległość euklidesowa
+\end{itemize}
+
+Ruch celu opisany jest niezależnym równaniem:
+\begin{equation}
+\frac{d\mathbf{t}}{dt} = \mathbf{v}_t(t)
+\label{eq:target_motion}
+\end{equation}
+
+gdzie $\mathbf{v}_t(t)$ jest zadaną funkcją prędkości celu.
+
+TODO:
+TODO: jakies tabelki dla różnych strategii, róznych parametrów, róznych wymiarów
+
+\section*{Literatura}
+
+\begin{enumerate}
+    \item Wikipedia, \textit{Krzywa pogoni}. \\
+    \url{https://en.wikipedia.org/wiki/Pursuit_curve}
+\end{enumerate}
+
+\end{document}
+

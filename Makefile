@@ -6,3 +6,6 @@ lint:
 
 format:
 	ruff format .
+
+tex:
+	pdflatex dokumentacja.tex

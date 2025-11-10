@@ -154,23 +154,7 @@
 - Geodezyjne jako krzywe pościgu
 - Wizualizacja z embedded 3D representations
 
-3. Pościg z przeszkodami
-
-- Dodanie statycznych przeszkód na płaszczyźnie
-- Algorytm omijania przeszkód (potential fields, A\*)
-- Optymalizacja trajektorii
-- Analiza wpływu przeszkód na czas pościgu
-- Wizualizacja z przeszkodami
-
-4. Pościg z ograniczeniami kinematycznymi
-
-- Maksymalne przyspieszenie i prędkość kątowa
-- Realistyczny model pojazdu (np. model Dubinsa)
-- Ograniczenia na promień skrętu
-- Porównanie z idealnym pościgiem
-- Analiza osiągalności celu
-
-5. Wydajność i optymalizacja dla wysokich wymiarów
+3. Wydajność i optymalizacja dla wysokich wymiarów
 
 - Wykorzystanie numpy broadcasting i vectorization
 - Numba JIT compilation dla pętli czasowych
