@@ -1,28 +1,28 @@
 import numpy as np
 from numpy.typing import NDArray
 from ..common import Point2D
-from .types import Strategy
+from .types import Strategy, TargetStrategy
+
+import math
 
 
 class ContinuousDirectPursuit(Strategy):
     """Kierunek wprost na cel - wersja ciągła."""
 
-    def __init__(self, target_velocity: Point2D, pursuer_velocity: Point2D):
-        self.target_velocity = target_velocity
+    def __init__(self, pursuer_velocity: Point2D, target_strategy: TargetStrategy):
         self.pursuer_velocity = pursuer_velocity
+        self.target_strategy = target_strategy
 
     def dynamics(self, t: float, y: NDArray[np.float32]) -> np.ndarray:
         """
-        t - czas (nieużywany, ale wymagany przez solve_ivp)
+        t - czas
         y = [pursuer_x, pursuer_y, target_x, target_y] w czasie t
         Zwraca pochodne: [dx_p/dt, dy_p/dt, dx_t/dt, dy_t/dt]
         """
         pursuer_pos = y[0:2]
         target_pos = y[2:4]
 
-        target_vel = np.array(
-            [self.target_velocity.x, self.target_velocity.y], dtype=np.float32
-        )
+        target_vel = self.target_strategy.calculate_movement(t)
 
         direction = target_pos - pursuer_pos
         distance = np.linalg.norm(direction)
@@ -52,21 +52,19 @@ class ContinuousConstantBearing(Strategy):
 
     def __init__(
         self,
-        target_velocity: Point2D,
         pursuer_velocity: Point2D,
+        target_strategy: TargetStrategy,
         bearing_angle_deg: float,
     ):
-        self.target_velocity = target_velocity
         self.pursuer_velocity = pursuer_velocity
+        self.target_strategy = target_strategy
         self.bearing_angle = np.radians(bearing_angle_deg)
 
     def dynamics(self, t: float, y: NDArray[np.float32]) -> np.ndarray:
         pursuer_pos = y[0:2]
         target_pos = y[2:4]
 
-        target_vel = np.array(
-            [self.target_velocity.x, self.target_velocity.y], dtype=np.float32
-        )
+        target_vel = self.target_strategy.calculate_movement(t)
 
         direction = target_pos - pursuer_pos
         angle_to_target = np.arctan2(direction[1], direction[0])
@@ -100,10 +98,10 @@ class ContinuousProportionalNavigation(Strategy):
     """
 
     def __init__(
-        self, target_velocity: Point2D, pursuer_velocity: Point2D, N: float = 3.0
+        self, pursuer_velocity: Point2D, target_strategy: TargetStrategy, N: float = 3.0
     ):
-        self.target_velocity = target_velocity
         self.pursuer_velocity = pursuer_velocity
+        self.target_strategy = target_strategy
         self.N = N
         self.previous_los_angle: float | None = None
         self.previous_pursuer_vel: NDArray[np.float32] | None = None
@@ -112,9 +110,7 @@ class ContinuousProportionalNavigation(Strategy):
         pursuer_pos = y[0:2]
         target_pos = y[2:4]
 
-        target_vel = np.array(
-            [self.target_velocity.x, self.target_velocity.y], dtype=np.float32
-        )
+        target_vel = self.target_strategy.calculate_movement(t)
 
         direction = target_pos - pursuer_pos
         los_angle = np.arctan2(direction[1], direction[0])
@@ -163,3 +159,33 @@ class ContinuousProportionalNavigation(Strategy):
 
     stop_condition.terminal = True
     stop_condition.direction = -1
+
+
+class ContinuousTargetCircleStrategy(TargetStrategy):
+    """Strategia dla celu poruszającego się po okręgu."""
+
+    def __init__(self, angular_velocity: float, r: float):
+        self.angular_velocity = angular_velocity
+        self.r = r
+
+    def calculate_movement(self, t: float) -> np.ndarray:
+        return np.array(
+            [
+                self.r * math.cos(self.angular_velocity * t),
+                self.r * math.sin(self.angular_velocity * t),
+            ],
+            dtype=np.float32,
+        )
+
+
+class ContinuousTargetLinearStrategy(TargetStrategy):
+    """Strategia dla celu poruszającego się liniowo."""
+
+    def __init__(self, velocity: Point2D):
+        self.velocity = velocity
+
+    def calculate_movement(self, t: float) -> np.ndarray:
+        return np.array(
+            [self.velocity.x, self.velocity.y],
+            dtype=np.float32,
+        )

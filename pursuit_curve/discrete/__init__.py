@@ -1,4 +1,4 @@
-from .strategies import DirectPursuit, ConstantBearing, ProportionalNavigation
+from .strategies import DirectPursuit, ConstantBearing, ProportionalNavigation, TargetCircleStrategy
 from .simulation import Simulation
 from .animation import animate_pursuit
 
@@ -8,4 +8,5 @@ __all__ = [
     "ProportionalNavigation",
     "Simulation",
     "animate_pursuit",
+    "TargetCircleStrategy"
 ]

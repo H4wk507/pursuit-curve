@@ -1,5 +1,5 @@
 from ..common import Point2D
-from .types import Strategy
+from .types import Strategy, TargetStrategy
 
 
 class Simulation:
@@ -8,20 +8,20 @@ class Simulation:
         pursuer_start: Point2D,
         target_start: Point2D,
         pursuer_velocity: Point2D,
-        target_velocity: Point2D,
         strategy: Strategy,
+        target_strategy: TargetStrategy,
         max_iters: int = 1000,
     ):
         self.pursuer_positions = [pursuer_start]
         self.target_positions = [target_start]
         self.pursuer_velocity = pursuer_velocity
-        self.target_velocity = target_velocity
         self.strategy = strategy
+        self.target_strategy = target_strategy
         self.max_iters = max_iters
 
     def _step(self) -> tuple[Point2D, Point2D]:
         target = self.target_positions[-1]
-        target += self.target_velocity
+        target = self.target_strategy.calculate_movement(target)
         self.target_positions.append(target)
 
         pursuer = self.pursuer_positions[-1]

@@ -1,7 +1,7 @@
 import math
 
 from ..common import Point2D
-from .types import Strategy
+from .types import Strategy, TargetStrategy
 
 
 class DirectPursuit(Strategy):
@@ -81,3 +81,18 @@ class ProportionalNavigation(Strategy):
         self.previous_los_angle = los_angle
         self.previous_pursuer_vel = new_vel
         return new_vel
+
+
+class TargetCircleStrategy(TargetStrategy):
+    """Strategia dla celu poruszającego się po okręgu."""
+
+    def __init__(self, angular_velocity: float, dt: float):
+        self.angular_velocity = angular_velocity
+        self.dt = dt
+
+    def calculate_movement(self, target: Point2D) -> Point2D:
+        return Point2D(
+            target.x * math.cos(self.angular_velocity * self.dt) - target.y * math.sin(self.angular_velocity * self.dt),
+            target.x * math.sin(self.angular_velocity * self.dt) + target.y * math.cos(self.angular_velocity * self.dt),
+        )
+

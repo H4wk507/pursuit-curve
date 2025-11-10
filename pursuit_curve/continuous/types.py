@@ -9,3 +9,8 @@ class Strategy(ABC):
 
     @abstractmethod
     def stop_condition(self, t: float, y: list[float]) -> np.float32: ...
+
+
+class TargetStrategy(ABC):
+    @abstractmethod
+    def calculate_movement(self, t: float) -> NDArray[np.float32]: ...
