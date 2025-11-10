@@ -157,6 +157,37 @@ class ContinuousProportionalNavigation(Strategy):
     stop_condition.direction = -1
 
 
+class ContinuousCyclicPursuit(Strategy):
+    def __init__(self, velocity: Point2D, n: int):
+        self.velocity = velocity
+        self.n = n
+        self.dim = 2
+
+    def dynamics(self, t: float, y: NDArray[np.float32]) -> np.ndarray:
+        positions = y.reshape((self.n, self.dim))
+        shifted_positions = np.roll(positions, -1, axis=0)
+        directions = shifted_positions - positions
+        dists = np.linalg.norm(directions, axis=1)
+        if np.any(dists < 1e-6):
+            vel = np.zeros(self.n * self.dim, dtype=np.float32)
+        else:
+            unit_vectors = directions / dists[:, np.newaxis]
+            v_scale = np.array([self.velocity.x, self.velocity.y], dtype=np.float32)
+            vel = unit_vectors * v_scale
+            vel = vel.flatten()
+        return vel
+
+    def stop_condition(self, t: float, y: list[float]) -> np.float32:
+        positions = np.array(y, dtype=np.float32).reshape((self.n, self.dim))
+        shifted_positions = np.roll(positions, -1, axis=0)
+        directions = shifted_positions - positions
+        dists = np.linalg.norm(directions, axis=1)
+        return np.min(dists) - 0.5
+
+    stop_condition.terminal = True
+    stop_condition.direction = -1
+
+
 class ContinuousTargetCircleStrategy(TargetStrategy):
     """Strategia dla celu poruszającego się po okręgu."""
 
