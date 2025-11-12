@@ -137,27 +137,23 @@
 
 ### Geometrie alternatywne (nice to have)
 
-1. Pościg na sferze (S²)
+[X] Pościg na sferze (S²)
 
-- Geodezyjne krzywe pościgu na powierzchni kuli
-- Współrzędne sferyczne (θ, φ) i metryka sferyczna
-- Great circle distance jako miara odległości
-- Równania różniczkowe w geometrii Riemanna
-- Zastosowania: nawigacja globalna, satelity LEO
-- Wizualizacja na 3D sferze z teksturą Ziemi
+- [x] Geodezyjne krzywe pościgu na powierzchni kuli
+- [x] Współrzędne sferyczne (θ, φ) i metryka sferyczna
+- [x] Great circle distance jako miara odległości
+- [x] Równania różniczkowe w geometrii Riemanna
+- [x] Wizualizacja 3D
 
-2. Pościg na torusie i innych rozmaitościach
+[X] Pościg na torusie i innych rozmaitościach
 
-- Geometria torusa (identyfikacja brzegów)
-- Metryka Riemanna dla ogólnych rozmaitości
-- Przykłady: torus, butelka Kleina, powierzchnie wyższego rodzaju
-- Geodezyjne jako krzywe pościgu
-- Wizualizacja z embedded 3D representations
+- [x] Geometria torusa
+- [x] Metryka Riemanna dla ogólnych rozmaitości
+- [x] Geodezyjne jako krzywe pościgu
 
 3. Wydajność i optymalizacja dla wysokich wymiarów
 
 - Wykorzystanie numpy broadcasting i vectorization
 - Numba JIT compilation dla pętli czasowych
-- Sparse representations gdzie możliwe
 - Benchmarking: czas obliczeń vs N (wykresy)
 - Memory profiling dla N = 1000+ wymiarów
