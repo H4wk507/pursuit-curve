@@ -55,13 +55,15 @@ Gliwice, \today
 
 \section{Cel zadania}
 
-Celem projektu jest implementacja i analiza różnych strategii pościgu (pursuit curves) w przestrzeni 2D, 3D oraz n-wymiarowej. Projekt obejmuje:
+Celem projektu jest implementacja i analiza różnych strategii pościgu (pursuit curves) w przestrzeni euklidesowej oraz na rozmaitościach riemannowskich. Projekt obejmuje:
 
 \begin{itemize}
-    \item Implementację klasycznych strategii pościgu: Direct Pursuit, Constant Bearing, Proportional Navigation
+    \item Implementację klasycznych strategii pościgu w 2D: Direct Pursuit, Constant Bearing, Proportional Navigation, Cyclic Pursuit
+    \item Rozszerzenie strategii na przestrzeń 3D oraz ogólną przestrzeń n-wymiarową
+    \item Implementację pościgu na rozmaitościach riemannowskich: sfera $S^2$ oraz torus
     \item Rozwiązanie numeryczne równań różniczkowych opisujących ruch ścigającego i celu
     \item Analizę zachowania strategii dla różnych trajektorii celu (linia prosta, okrąg, helisa, krzywe Lissajous)
-    \item Uogólnienie problemu na przestrzeń n-wymiarową i badanie wpływu liczby wymiarów
+    \item Porównanie podejść ciągłych (ODE) i dyskretnych (iteracyjnych)
     \item Wizualizację trajektorii w 2D i 3D oraz analizę numeryczną dla wyższych wymiarów
 \end{itemize}
 
@@ -113,14 +115,429 @@ Ruch celu opisany jest niezależnym równaniem:
 
 gdzie $\mathbf{v}_t(t)$ jest zadaną funkcją prędkości celu.
 
-TODO:
-TODO: jakies tabelki dla różnych strategii, róznych parametrów, róznych wymiarów
+\subsubsection{Uogólnienie na przestrzeń 3D}
+
+W przestrzeni trójwymiarowej $\mathbb{R}^3$, równania pościgu bezpośredniego mają analogiczną postać:
+
+\begin{equation}
+\frac{d\mathbf{p}}{dt} = v_p \cdot \frac{\mathbf{t} - \mathbf{p}}{\|\mathbf{t} - \mathbf{p}\|}
+\end{equation}
+
+gdzie $\mathbf{p}(t) = [p_x(t), p_y(t), p_z(t)]^T$ i $\mathbf{t}(t) = [t_x(t), t_y(t), t_z(t)]^T$, a odległość euklidesowa:
+\begin{equation}
+\|\mathbf{t} - \mathbf{p}\| = \sqrt{(t_x - p_x)^2 + (t_y - p_y)^2 + (t_z - p_z)^2}
+\end{equation}
+
+\subsubsection{Przestrzeń n-wymiarowa}
+
+Dla ogólnej przestrzeni $\mathbb{R}^n$, strategia Direct Pursuit generalizuje się do:
+
+\begin{equation}
+\frac{d\mathbf{p}}{dt} = v_p \cdot \frac{\mathbf{t} - \mathbf{p}}{\|\mathbf{t} - \mathbf{p}\|_2}
+\end{equation}
+
+gdzie $\mathbf{p}, \mathbf{t} \in \mathbb{R}^n$ oraz $\|\cdot\|_2$ oznacza normę euklidesową:
+\begin{equation}
+\|\mathbf{x}\|_2 = \sqrt{\sum_{i=1}^{n} x_i^2}
+\end{equation}
+
+\subsection{Constant Bearing (Stały kąt namiarowania)}
+
+W strategii Constant Bearing, ścigający porusza się pod stałym kątem $\beta$ względem kierunku do celu. Prowadzi to do trajektorii w postaci spirali logarytmicznej.
+
+\subsubsection{Model matematyczny 2D}
+
+Kierunek ruchu ścigającego:
+\begin{equation}
+\theta_{\text{target}} = \arctan2(t_y - p_y, t_x - p_x)
+\end{equation}
+
+\begin{equation}
+\theta_{\text{pursuer}} = \theta_{\text{target}} + \beta
+\end{equation}
+
+Równanie ruchu:
+\begin{equation}
+\frac{d\mathbf{p}}{dt} = v_p \cdot [\cos(\theta_{\text{pursuer}}), \sin(\theta_{\text{pursuer}})]^T
+\end{equation}
+
+gdzie $\beta$ jest stałym kątem namiarowania (parametr strategii).
+
+\subsection{Proportional Navigation (Nawigacja proporcjonalna)}
+
+Strategia Proportional Navigation jest szeroko stosowana w naprowadzaniu pocisków. Prędkość kątowa ścigającego jest proporcjonalna do prędkości kątowej linii wzroku (Line-Of-Sight, LOS).
+
+\subsubsection{Model matematyczny 2D}
+
+Kąt linii wzroku:
+\begin{equation}
+\lambda(t) = \arctan2(t_y - p_y, t_x - p_x)
+\end{equation}
+
+Prędkość kątowa LOS:
+\begin{equation}
+\dot{\lambda}(t) = \frac{d\lambda}{dt}
+\end{equation}
+
+Nowy kąt ruchu ścigającego:
+\begin{equation}
+\theta_{\text{new}} = \theta_{\text{current}} + N \cdot \Delta\lambda
+\end{equation}
+
+gdzie:
+\begin{itemize}
+    \item $N$ -- stała nawigacji (typowo $N \in [3, 5]$)
+    \item $\Delta\lambda$ -- zmiana kąta LOS w ostatnim kroku czasowym
+\end{itemize}
+
+Równanie ruchu:
+\begin{equation}
+\frac{d\mathbf{p}}{dt} = v_p \cdot [\cos(\theta_{\text{new}}), \sin(\theta_{\text{new}})]^T
+\end{equation}
+
+\subsection{Cyclic Pursuit (Pościg cykliczny)}
+
+W pościgu cyklicznym, $n$ agentów jest ułożonych w konfiguracji początkowej (zazwyczaj okrąg), a każdy agent ściga kolejnego agenta według strategii Direct Pursuit. Prowadzi to do zbieżności wszystkich agentów do wspólnego punktu centralnego.
+
+\subsubsection{Model matematyczny}
+
+Dla $n$ agentów, stan układu składa się z $2n$ współrzędnych:
+\begin{equation}
+\mathbf{s}(t) = [x_1, y_1, x_2, y_2, \ldots, x_n, y_n]^T
+\end{equation}
+
+Równanie ruchu agenta $i$ ($i = 1, 2, \ldots, n$):
+\begin{equation}
+\frac{d\mathbf{p}_i}{dt} = v_i \cdot \frac{\mathbf{p}_{i+1} - \mathbf{p}_i}{\|\mathbf{p}_{i+1} - \mathbf{p}_i\|}
+\end{equation}
+
+gdzie $\mathbf{p}_{n+1} = \mathbf{p}_1$ (cykliczne indeksowanie).
+
+\subsection{Trajektorie celu}
+
+\subsubsection{Ruch liniowy}
+
+Cel porusza się ze stałą prędkością:
+\begin{equation}
+\mathbf{v}_t(t) = \mathbf{v}_0 = \text{const}
+\end{equation}
+
+\subsubsection{Ruch po okręgu (2D)}
+
+Cel wykonuje ruch jednostajny po okręgu o promieniu $r$ z prędkością kątową $\omega$:
+\begin{equation}
+\mathbf{t}(t) = [r\cos(\omega t), r\sin(\omega t)]^T
+\end{equation}
+
+\subsubsection{Helisa (3D)}
+
+Trajektoria helisoidalna w przestrzeni 3D:
+\begin{equation}
+\mathbf{t}(t) = [r\cos(\omega t), r\sin(\omega t), v_z \cdot t]^T
+\end{equation}
+
+gdzie:
+\begin{itemize}
+    \item $r$ -- promień helisy
+    \item $\omega$ -- prędkość kątowa
+    \item $v_z$ -- prędkość pionowa
+\end{itemize}
+
+\subsubsection{Krzywe Lissajous (3D)}
+
+Trajektoria opisana przez niezależne oscylacje harmoniczne w każdej współrzędnej:
+\begin{equation}
+\mathbf{t}(t) = [A_x \sin(\omega_x t), A_y \sin(\omega_y t), A_z \sin(\omega_z t)]^T
+\end{equation}
+
+gdzie:
+\begin{itemize}
+    \item $A_x, A_y, A_z$ -- amplitudy oscylacji
+    \item $\omega_x, \omega_y, \omega_z$ -- częstotliwości kątowe
+\end{itemize}
+
+\subsection{Pościg na rozmaitościach riemannowskich}
+
+\subsubsection{Pościg na sferze $S^2$}
+
+Dla pościgu na powierzchni sfery o promieniu $R$, pozycje są parametryzowane współrzędnymi sferycznymi $(r, \theta, \phi)$:
+\begin{itemize}
+    \item $r$ -- promień (stały, $r = R$)
+    \item $\theta$ -- kąt polarny (colatitude), $\theta \in [0, \pi]$
+    \item $\phi$ -- kąt azymutalny (longitude), $\phi \in [0, 2\pi)$
+\end{itemize}
+
+Konwersja do współrzędnych kartezjańskich:
+\begin{equation}
+\begin{bmatrix} x \\ y \\ z \end{bmatrix} = \begin{bmatrix} R \sin\theta \cos\phi \\ R \sin\theta \sin\phi \\ R \cos\theta \end{bmatrix}
+\end{equation}
+
+Metryka riemannowska na sferze:
+\begin{equation}
+ds^2 = R^2 d\theta^2 + R^2 \sin^2\theta \, d\phi^2
+\end{equation}
+
+Kierunek ruchu ścigającego jest rzutowany na płaszczyznę styczną do sfery, zapewniając ruch geodezyjny.
+
+Odległość kątowa między dwoma punktami na sferze:
+\begin{equation}
+d_{\text{angular}} = \arccos(\cos\theta_p \cos\theta_t + \sin\theta_p \sin\theta_t \cos(\phi_t - \phi_p))
+\end{equation}
+
+\subsubsection{Pościg na torusie}
+
+Torus jest parametryzowany dwoma kątami $(u, v)$:
+\begin{itemize}
+    \item $u \in [0, 2\pi)$ -- kąt wokół głównej osi
+    \item $v \in [0, 2\pi)$ -- kąt wokół przekroju poprzecznego
+\end{itemize}
+
+Konwersja do współrzędnych kartezjańskich ($R$ -- promień główny, $r$ -- promień przekroju):
+\begin{equation}
+\begin{bmatrix} x \\ y \\ z \end{bmatrix} = \begin{bmatrix} (R + r\cos v) \cos u \\ (R + r\cos v) \sin u \\ r \sin v \end{bmatrix}
+\end{equation}
+
+Metryka riemannowska na torusie:
+\begin{equation}
+ds^2 = (R + r\cos v)^2 du^2 + r^2 dv^2
+\end{equation}
+
+Odległość riemannowska obliczana jest z uwzględnieniem metryki oraz okresowości kątów (warunki brzegowe toroidalne).
+
+\subsection{Podsumowanie zaimplementowanych algorytmów}
+
+Tabela \ref{tab:algorithms} przedstawia wszystkie zaimplementowane algorytmy pościgu.
+
+\begin{table}[H]
+\centering
+\caption{Zaimplementowane algorytmy pościgu}
+\label{tab:algorithms}
+\begin{tabular}{@{}llll@{}}
+\toprule
+\textbf{Algorytm} & \textbf{Wymiar} & \textbf{Typ} & \textbf{Moduł} \\ \midrule
+Direct Pursuit & 2D & Ciągły & \texttt{d2.continuous} \\
+Constant Bearing & 2D & Ciągły & \texttt{d2.continuous} \\
+Proportional Navigation & 2D & Ciągły & \texttt{d2.continuous} \\
+Cyclic Pursuit & 2D & Ciągły & \texttt{d2.continuous} \\
+Direct Pursuit & 2D & Dyskretny & \texttt{d2.discrete} \\
+Constant Bearing & 2D & Dyskretny & \texttt{d2.discrete} \\
+Proportional Navigation & 2D & Dyskretny & \texttt{d2.discrete} \\
+Direct Pursuit & 3D & Ciągły & \texttt{d3.continuous} \\
+Direct Pursuit & n-wymiarowy & Ciągły & \texttt{dn.continuous} \\
+Direct Pursuit & Sfera $S^2$ & Ciągły & \texttt{sphere.continuous} \\
+Direct Pursuit & Torus & Ciągły & \texttt{torus.continuous} \\ \bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Trajektorie celu -- implementacje}
+
+Tabela \ref{tab:targets} przedstawia wszystkie zaimplementowane trajektorie celu.
+
+\begin{table}[H]
+\centering
+\caption{Zaimplementowane trajektorie celu}
+\label{tab:targets}
+\begin{tabular}{@{}lll@{}}
+\toprule
+\textbf{Trajektoria} & \textbf{Wymiar} & \textbf{Moduł} \\ \midrule
+Ruch liniowy & 2D & \texttt{d2.continuous} \\
+Ruch po okręgu & 2D & \texttt{d2.continuous} \\
+Ruch liniowy & 3D & \texttt{d3.continuous} \\
+Helisa & 3D & \texttt{d3.continuous} \\
+Krzywe Lissajous & 3D & \texttt{d3.continuous} \\
+Ruch liniowy & n-wymiarowy & \texttt{dn.continuous} \\
+Ruch na sferze & Sfera $S^2$ & \texttt{sphere.continuous} \\
+Ruch na torusie & Torus & \texttt{torus.continuous} \\ \bottomrule
+\end{tabular}
+\end{table}
+
+\section{Implementacja}
+
+\subsection{Architektura projektu}
+
+Projekt zaimplementowany jest w języku Python 3.12+ z wykorzystaniem następujących bibliotek:
+\begin{itemize}
+    \item \texttt{numpy} -- operacje na tablicach i wektoryzacja obliczeń
+    \item \texttt{scipy} -- rozwiązywanie równań różniczkowych (\texttt{solve\_ivp})
+    \item \texttt{matplotlib} -- wizualizacja 2D i animacje
+    \item \texttt{plotly} -- wizualizacja 3D interaktywna
+\end{itemize}
+
+\subsection{Struktura modułów}
+
+\begin{itemize}
+    \item \texttt{common/} -- klasy bazowe i wspólne narzędzia
+    \begin{itemize}
+        \item \texttt{types.py} -- definicje \texttt{Point2D}, \texttt{Point3D}, \texttt{PointND}, \texttt{Strategy}, \texttt{TargetStrategy}
+        \item \texttt{continuous\_simulation.py} -- symulacja ciągła z użyciem \texttt{solve\_ivp}
+    \end{itemize}
+    \item \texttt{d2/} -- implementacje 2D (ciągłe i dyskretne)
+    \item \texttt{d3/} -- implementacje 3D (ciągłe)
+    \item \texttt{dn/} -- implementacje n-wymiarowe (ciągłe)
+    \item \texttt{sphere/} -- pościg na sferze $S^2$
+    \item \texttt{torus/} -- pościg na torusie
+    \item \texttt{examples/} -- przykładowe skrypty demonstracyjne
+\end{itemize}
+
+\subsection{Podejście ciągłe vs. dyskretne}
+
+\subsubsection{Symulacja ciągła}
+
+W podejściu ciągłym, równania różniczkowe są rozwiązywane numerycznie za pomocą metody Runge-Kutty (implementacja \texttt{scipy.integrate.solve\_ivp}). Metoda ta zapewnia:
+\begin{itemize}
+    \item Adaptacyjny krok czasowy
+    \item Kontrolę błędu (tolerancje względne i bezwzględne)
+    \item Detekcję zdarzeń (warunki terminalne, np. przechwycenie celu)
+    \item Gęste wyjście (interpolacja trajektorii)
+\end{itemize}
+
+Funkcja \texttt{run\_continuous\_simulation()} przyjmuje:
+\begin{itemize}
+    \item Strategię pościgu (\texttt{Strategy})
+    \item Strategię ruchu celu (\texttt{TargetStrategy})
+    \item Warunki początkowe
+    \item Parametry symulacji (czas końcowy, tolerancje)
+\end{itemize}
+
+\subsubsection{Symulacja dyskretna}
+
+W podejściu dyskretnym, równania są iterowane z ustalonym krokiem czasowym $\Delta t$:
+\begin{equation}
+\mathbf{p}_{k+1} = \mathbf{p}_k + \Delta t \cdot \mathbf{v}_p(\mathbf{p}_k, \mathbf{t}_k)
+\end{equation}
+
+\begin{equation}
+\mathbf{t}_{k+1} = \mathbf{t}_k + \Delta t \cdot \mathbf{v}_t(\mathbf{t}_k)
+\end{equation}
+
+Podejście dyskretne jest prostsze w implementacji, ale może wprowadzać większe błędy numeryczne przy niewłaściwym doborze $\Delta t$.
+
+\section{Wyniki eksperymentów}
+
+\subsection{Pościg 2D -- Direct Pursuit}
+
+\subsubsection{Cel nieruchomy}
+
+\textbf{TODO:} Analiza numeryczna dla celu nieruchomego:
+\begin{itemize}
+    \item Porównanie czasu przechwycenia dla różnych prędkości ścigającego
+    \item Długość trajektorii w funkcji pozycji początkowej
+    \item Wykres trajektorii
+\end{itemize}
+
+\subsubsection{Cel poruszający się po okręgu}
+
+\textbf{TODO:} Analiza numeryczna dla celu poruszającego się po okręgu:
+\begin{itemize}
+    \item Wpływ prędkości kątowej celu $\omega$ na kształt trajektorii
+    \item Warunek konieczny do przechwycenia: $v_p > v_t$
+    \item Wykres trajektorii dla różnych $\omega$
+\end{itemize}
+
+\subsection{Pościg 2D -- Constant Bearing}
+
+\textbf{TODO:} Analiza numeryczna:
+\begin{itemize}
+    \item Kształt spirali logarytmicznej w funkcji kąta $\beta$
+    \item Porównanie z Direct Pursuit -- długość trajektorii, czas przechwycenia
+    \item Wizualizacja dla $\beta \in \{0°, 15°, 30°, 45°\}$
+\end{itemize}
+
+\subsection{Pościg 2D -- Proportional Navigation}
+
+\textbf{TODO:} Analiza numeryczna:
+\begin{itemize}
+    \item Wpływ stałej nawigacji $N$ na trajektorię
+    \item Porównanie efektywności: $N \in \{1, 2, 3, 4, 5\}$
+    \item Stabilność metody dla różnych kroków czasowych
+\end{itemize}
+
+\subsection{Pościg cykliczny}
+
+\textbf{TODO:} Analiza numeryczna:
+\begin{itemize}
+    \item Zbieżność do punktu centralnego dla $n \in \{3, 4, 6, 12, 18\}$ agentów
+    \item Czas zbieżności w funkcji liczby agentów
+    \item Kształt trajektorii zbiorczej
+\end{itemize}
+
+\subsection{Pościg 3D -- Helix Target}
+
+\textbf{TODO:} Analiza numeryczna:
+\begin{itemize}
+    \item Wpływ parametrów helisy ($r$, $\omega$, $v_z$) na trajektorię ścigającego
+    \item Wizualizacja 3D trajektorii
+    \item Czas przechwycenia w funkcji prędkości pionowej $v_z$
+\end{itemize}
+
+\subsection{Pościg 3D -- Lissajous Target}
+
+\textbf{TODO:} Analiza numeryczna:
+\begin{itemize}
+    \item Wpływ stosunku częstotliwości $\omega_x : \omega_y : \omega_z$ na kształt krzywej
+    \item Wizualizacja trajektorii dla różnych kombinacji parametrów
+    \item Złożoność trajektorii ścigającego
+\end{itemize}
+
+\subsection{Pościg n-wymiarowy}
+
+\textbf{TODO:} Analiza numeryczna:
+\begin{itemize}
+    \item Porównanie czasu przechwycenia dla $n \in \{2, 3, 4, 5, 10, 20\}$ wymiarów
+    \item Długość trajektorii w funkcji wymiaru
+    \item Wpływ "przekleństwa wymiarowości" na efektywność pościgu
+\end{itemize}
+
+\subsection{Pościg na sferze $S^2$}
+
+\textbf{TODO:} Analiza numeryczna:
+\begin{itemize}
+    \item Trajektorie geodezyjne na powierzchni sfery
+    \item Porównanie z pościgiem w $\mathbb{R}^3$ (projekcja)
+    \item Wizualizacja 3D z renderowaniem sfery
+\end{itemize}
+
+\subsection{Pościg na torusie}
+
+\textbf{TODO:} Analiza numeryczna:
+\begin{itemize}
+    \item Wpływ stosunku promieni $R/r$ na trajektorię
+    \item Efekt topologii toroidalnej (periodyczność)
+    \item Wizualizacja 3D z renderowaniem torusa
+\end{itemize}
+
+\section{Wnioski}
+
+\textbf{TODO:} Podsumowanie wyników:
+\begin{itemize}
+    \item Porównanie efektywności strategii (Direct, Constant Bearing, Proportional Navigation)
+    \item Wnioski dotyczące zastosowań praktycznych
+    \item Wpływ wymiaru przestrzeni na złożoność problemu
+    \item Obserwacje dotyczące pościgu na rozmaitościach riemannowskich
+\end{itemize}
 
 \section*{Literatura}
 
 \begin{enumerate}
-    \item Wikipedia, \textit{Krzywa pogoni}. \\
+    \item Wikipedia, \textit{Pursuit curve}. \\
     \url{https://en.wikipedia.org/wiki/Pursuit_curve}
+
+    \item Wikipedia, \textit{Proportional navigation}. \\
+    \url{https://en.wikipedia.org/wiki/Proportional_navigation}
+
+    \item Nahin, P. J. (2007). \textit{Chases and Escapes: The Mathematics of Pursuit and Evasion}. Princeton University Press.
+
+    \item Virtanen, P., et al. (2020). SciPy 1.0: Fundamental Algorithms for Scientific Computing in Python. \textit{Nature Methods}, 17, 261–272. \\
+    \url{https://doi.org/10.1038/s41592-019-0686-2}
+
+    \item Harris, C. R., et al. (2020). Array programming with NumPy. \textit{Nature}, 585, 357–362. \\
+    \url{https://doi.org/10.1038/s41586-020-2649-2}
+
+    \item do Carmo, M. P. (1992). \textit{Riemannian Geometry}. Birkhäuser.
+
+    \item Shneydor, N. A. (1998). \textit{Missile Guidance and Pursuit: Kinematics, Dynamics and Control}. Horwood Publishing.
+
+    \item Richardson, D. W. (1979). Cyclic Pursuit and Its Applications. \textit{Journal of Optimization Theory and Applications}, 29(1), 101-123.
 \end{enumerate}
 
 \end{document}
