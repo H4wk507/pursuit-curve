@@ -8,10 +8,12 @@ from pursuit_curve.dn.continuous import (
     ContinuousTargetLinearStrategyND,
 )
 
-initial_state = [12.0, 12.0, 12.0, 12.0, 12.0, 5.0, 0.0, 0.0, 0.0, 0.0]
+n = 1000
+
+initial_state = [12.0 + i for i in range(n * 2)]
 strategy = ContinuousDirectPursuitND(
-    pursuer_velocity=PointND((2.5, 2.5, 2.5, 2.5, 2.5)),
-    target_strategy=ContinuousTargetLinearStrategyND(velocity=PointND((1.0, 0.5, 0.0, 1.0, 0.5))),
+    pursuer_velocity=PointND(tuple([2.0 for _ in range(n)])),
+    target_strategy=ContinuousTargetLinearStrategyND(velocity=PointND(tuple([1.0 for _ in range(n)]))),
 )
 solution = run_continuous_simulation(initial_state, strategy, t_span=(0, 120))
 print(solution)

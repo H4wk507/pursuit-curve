@@ -153,7 +153,5 @@
 
 3. Wydajność i optymalizacja dla wysokich wymiarów
 
-- Wykorzystanie numpy broadcasting i vectorization
-- Numba JIT compilation dla pętli czasowych
 - Benchmarking: czas obliczeń vs N (wykresy)
 - Memory profiling dla N = 1000+ wymiarów
