@@ -55,10 +55,10 @@ Gliwice, \today
 
 \section{Cel zadania}
 
-Celem projektu jest implementacja i analiza różnych strategii pościgu (pursuit curves) w przestrzeni euklidesowej oraz na rozmaitościach riemannowskich. Projekt obejmuje:
+Celem projektu jest implementacja i analiza różnych strategii pościgu  w przestrzeni euklidesowej oraz na rozmaitościach riemannowskich. Projekt obejmuje:
 
 \begin{itemize}
-    \item Implementację klasycznych strategii pościgu w 2D: Direct Pursuit, Constant Bearing, Proportional Navigation, Cyclic Pursuit
+    \item Implementacja klasycznych strategii pościgu w 2D: bezpośredniego pościgu, pościgu przy stałym namiarze, nawigacji proporcjonalnej oraz pościgu cyklicznego.
     \item Rozszerzenie strategii na przestrzeń 3D oraz ogólną przestrzeń n-wymiarową
     \item Implementację pościgu na rozmaitościach riemannowskich: sfera $S^2$ oraz torus
     \item Rozwiązanie numeryczne równań różniczkowych opisujących ruch ścigającego i celu
@@ -71,7 +71,7 @@ Celem projektu jest implementacja i analiza różnych strategii pościgu (pursui
 
 \subsection{Wprowadzenie do problemu pościgu}
 
-Problem pościgu (pursuit problem) polega na określeniu trajektorii ścigającego (pursuer), który dąży do przechwycenia poruszającego się celu (target). W zależności od zastosowanej strategii, ścigający może celować bezpośrednio w aktualną pozycję celu (Direct Pursuit), utrzymywać stały kąt namiarowania (Constant Bearing), lub stosować bardziej zaawansowane metody jak nawigacja proporcjonalna (Proportional Navigation).
+Problem pościgu polega na określeniu trajektorii ścigającego, który dąży do przechwycenia poruszającego się celu. W zależności od zastosowanej strategii, ścigający może celować bezpośrednio w aktualną pozycję celu, utrzymywać stały kąt namiarowania, lub stosować bardziej zaawansowane metody jak nawigacja proporcjonalna.
 
 Problemy pościgu mają szerokie zastosowania praktyczne:
 \begin{itemize}
@@ -82,101 +82,103 @@ Problemy pościgu mają szerokie zastosowania praktyczne:
     \item Optymalizacja trajektorii
 \end{itemize}
 
-\subsection{Klasyczna krzywa pościgu (Direct Pursuit)}
+\subsection{Klasyczna krzywa pościgu (Pościg bezpośredni)}
 
 \subsubsection{Model matematyczny 2D}
 
-W najprostszym przypadku Direct Pursuit, ścigający w każdej chwili celuje bezpośrednio w aktualną pozycję celu. Stan układu w przestrzeni dwuwymiarowej $\mathbb{R}^2$ opisany jest wektorami:
+W najprostszym przypadku pościgu bezpośredniego, ścigający w każdej chwili celuje bezpośrednio w aktualną pozycję celu. Stan układu w przestrzeni dwuwymiarowej $\mathbb{R}^2$ opisany jest wektorami:
 
 \begin{itemize}
-    \item $\mathbf{p}(t) = [p_x(t), p_y(t)]^T$ -- pozycja ścigającego
-    \item $\mathbf{t}(t) = [t_x(t), t_y(t)]^T$ -- pozycja celu
+    \item $\vec{p}(t) = [p_x(t), p_y(t)]^T$ -- pozycja ścigającego
+    \item $\vec{t}(t) = [t_x(t), t_y(t)]^T$ -- pozycja celu
 \end{itemize}
 
-Równania różniczkowe opisujące ruch ścigającego w strategii Direct Pursuit mają postać:
+Równania różniczkowe opisujące ruch ścigającego w strategii pościgu bezpośredniego mają postać:
 
 \begin{equation}
-\frac{d\mathbf{p}}{dt} = v_p \cdot \frac{\mathbf{t} - \mathbf{p}}{\|\mathbf{t} - \mathbf{p}\|}
+\frac{d\vec{p}(t)}{dt} = v_p \cdot \frac{\vec{t}(t) - \vec{p}(t)}{\|\vec{t}(t) - \vec{p}(t)\|}
 \label{eq:direct_pursuit_2d}
 \end{equation}
 
 gdzie:
 \begin{itemize}
     \item $v_p > 0$ -- prędkość skalarna ścigającego [m/s]
-    \item $\mathbf{t} - \mathbf{p}$ -- wektor skierowany od ścigającego do celu
-    \item $\|\mathbf{t} - \mathbf{p}\| = \sqrt{(t_x - p_x)^2 + (t_y - p_y)^2}$ -- odległość euklidesowa
+    \item $\vec{t}(t) - \vec{p}(t)$ -- wektor skierowany od ścigającego do celu
+    \item $\|\vec{t}(t) - \vec{p}(t)\| = \sqrt{(t_x(t) - p_x(t))^2 + (t_y(t) - p_y(t))^2}$ -- odległość euklidesowa
 \end{itemize}
 
 Ruch celu opisany jest niezależnym równaniem:
 \begin{equation}
-\frac{d\mathbf{t}}{dt} = \mathbf{v}_t(t)
+\frac{d\vec{t}(t)}{dt} = \vec{v}_t(t)
 \label{eq:target_motion}
 \end{equation}
 
-gdzie $\mathbf{v}_t(t)$ jest zadaną funkcją prędkości celu.
+gdzie $\vec{v}_t(t)$ jest zadaną funkcją prędkości celu.
 
 \subsubsection{Uogólnienie na przestrzeń 3D}
 
 W przestrzeni trójwymiarowej $\mathbb{R}^3$, równania pościgu bezpośredniego mają analogiczną postać:
 
 \begin{equation}
-\frac{d\mathbf{p}}{dt} = v_p \cdot \frac{\mathbf{t} - \mathbf{p}}{\|\mathbf{t} - \mathbf{p}\|}
+\frac{d\vec{p}(t)}{dt} = v_p \cdot \frac{\vec{t}(t) - \vec{p}(t)}{\|\vec{t}(t) - \vec{p}(t)\|}
 \end{equation}
 
-gdzie $\mathbf{p}(t) = [p_x(t), p_y(t), p_z(t)]^T$ i $\mathbf{t}(t) = [t_x(t), t_y(t), t_z(t)]^T$, a odległość euklidesowa:
-\begin{equation}
-\|\mathbf{t} - \mathbf{p}\| = \sqrt{(t_x - p_x)^2 + (t_y - p_y)^2 + (t_z - p_z)^2}
-\end{equation}
+gdzie:
+\begin{itemize}
+    \item $\vec{p}(t) = [p_x(t), p_y(t), p_z(t)]^T$ -- pozycja ścigającego w 3D
+    \item $\vec{t}(t) = [t_x(t), t_y(t), t_z(t)]^T$ -- pozycja celu w 3D
+    \item $\|\vec{t}(t) - \vec{p}(t)\| = \sqrt{(t_x(t) - p_x(t))^2 + (t_y(t) - p_y(t))^2 + (t_z(t) - p_z(t))^2}$ -- odległość euklidesowa w 3D
+\end{itemize}
 
 \subsubsection{Przestrzeń n-wymiarowa}
 
-Dla ogólnej przestrzeni $\mathbb{R}^n$, strategia Direct Pursuit generalizuje się do:
+Dla ogólnej przestrzeni $\mathbb{R}^n$, strategia pościgu bezpośredniego generalizuje się do:
 
 \begin{equation}
-\frac{d\mathbf{p}}{dt} = v_p \cdot \frac{\mathbf{t} - \mathbf{p}}{\|\mathbf{t} - \mathbf{p}\|_2}
+\frac{d\vec{p}(t)}{dt} = v_p \cdot \frac{\vec{t}(t) - \vec{p}(t)}{\|\vec{t}(t) - \vec{p}(t)\|_2}
 \end{equation}
 
-gdzie $\mathbf{p}, \mathbf{t} \in \mathbb{R}^n$ oraz $\|\cdot\|_2$ oznacza normę euklidesową:
+gdzie $\vec{p}, \vec{t} \in \mathbb{R}^n$ oraz $\|\cdot\|_2$ oznacza normę euklidesową:
 \begin{equation}
-\|\mathbf{x}\|_2 = \sqrt{\sum_{i=1}^{n} x_i^2}
+\|\vec{x}\|_2 = \sqrt{\sum_{i=1}^{n} x_i^2}
 \end{equation}
 
-\subsection{Constant Bearing (Stały kąt namiarowania)}
+\subsection{Stały kąt namiarowania}
 
-W strategii Constant Bearing, ścigający porusza się pod stałym kątem $\beta$ względem kierunku do celu. Prowadzi to do trajektorii w postaci spirali logarytmicznej.
+W strategii stałego kątu namiarowania, ścigający porusza się pod stałym kątem $\beta$ względem kierunku do celu. Prowadzi to do trajektorii w postaci spirali logarytmicznej.
 
 \subsubsection{Model matematyczny 2D}
 
 Kierunek ruchu ścigającego:
 \begin{equation}
-\theta_{\text{target}} = \arctan2(t_y - p_y, t_x - p_x)
+\theta_{\text{target}}(t) = \arctan2(t_y(t) - p_y(t), t_x(t) - p_x(t))
 \end{equation}
 
 \begin{equation}
-\theta_{\text{pursuer}} = \theta_{\text{target}} + \beta
+\theta_{\text{pursuer}}(t) = \theta_{\text{target}}(t) + \beta
 \end{equation}
 
 Równanie ruchu:
 \begin{equation}
-\frac{d\mathbf{p}}{dt} = v_p \cdot [\cos(\theta_{\text{pursuer}}), \sin(\theta_{\text{pursuer}})]^T
+\frac{d\vec{p}(t)}{dt} = v_p \cdot [\cos(\theta_{\text{pursuer}}(t)), \sin(\theta_{\text{pursuer}}(t))]^T
 \end{equation}
 
 gdzie $\beta$ jest stałym kątem namiarowania (parametr strategii).
 
-\subsection{Proportional Navigation (Nawigacja proporcjonalna)}
+\subsection{Nawigacja proporcjonalna}
 
-Strategia Proportional Navigation jest szeroko stosowana w naprowadzaniu pocisków. Prędkość kątowa ścigającego jest proporcjonalna do prędkości kątowej linii wzroku (Line-Of-Sight, LOS).
+Strategia nawigacji proporcjonalnej jest szeroko stosowana w naprowadzaniu pocisków. Prędkość kątowa ścigającego jest proporcjonalna do prędkości kątowej linii wzroku (Line-Of-Sight, LOS).
 
 \subsubsection{Model matematyczny 2D}
 
 Kąt linii wzroku:
 \begin{equation}
-\lambda(t) = \arctan2(t_y - p_y, t_x - p_x)
+\lambda(t) = \arctan2(t_y(t) - p_y(t), t_x(t) - p_x(t))
 \end{equation}
 
 Prędkość kątowa LOS:
 \begin{equation}
-\dot{\lambda}(t) = \frac{d\lambda}{dt}
+\dot{\lambda}(t) = \frac{d\lambda(t)}{dt}
 \end{equation}
 
 Nowy kąt ruchu ścigającego:
@@ -192,26 +194,26 @@ gdzie:
 
 Równanie ruchu:
 \begin{equation}
-\frac{d\mathbf{p}}{dt} = v_p \cdot [\cos(\theta_{\text{new}}), \sin(\theta_{\text{new}})]^T
+\frac{d\vec{p}}{dt} = v_p \cdot [\cos(\theta_{\text{new}}), \sin(\theta_{\text{new}})]^T
 \end{equation}
 
-\subsection{Cyclic Pursuit (Pościg cykliczny)}
+\subsection{Pościg cykliczny}
 
-W pościgu cyklicznym, $n$ agentów jest ułożonych w konfiguracji początkowej (zazwyczaj okrąg), a każdy agent ściga kolejnego agenta według strategii Direct Pursuit. Prowadzi to do zbieżności wszystkich agentów do wspólnego punktu centralnego.
+W pościgu cyklicznym, $n$ agentów jest ułożonych w konfiguracji początkowej (zazwyczaj okrąg), a każdy agent ściga kolejnego agenta według strategii pościgu bezpośredniego. Prowadzi to do zbieżności wszystkich agentów do wspólnego punktu centralnego.
 
 \subsubsection{Model matematyczny}
 
 Dla $n$ agentów, stan układu składa się z $2n$ współrzędnych:
 \begin{equation}
-\mathbf{s}(t) = [x_1, y_1, x_2, y_2, \ldots, x_n, y_n]^T
+\vec{s}(t) = [x_1, y_1, x_2, y_2, \ldots, x_n, y_n]^T
 \end{equation}
 
 Równanie ruchu agenta $i$ ($i = 1, 2, \ldots, n$):
 \begin{equation}
-\frac{d\mathbf{p}_i}{dt} = v_i \cdot \frac{\mathbf{p}_{i+1} - \mathbf{p}_i}{\|\mathbf{p}_{i+1} - \mathbf{p}_i\|}
+\frac{d\vec{p}_i}{dt} = v_i \cdot \frac{\vec{p}_{i+1} - \vec{p}_i}{\|\vec{p}_{i+1} - \vec{p}_i\|}
 \end{equation}
 
-gdzie $\mathbf{p}_{n+1} = \mathbf{p}_1$ (cykliczne indeksowanie).
+gdzie $\vec{p}_{n+1} = \vec{p}_1$ (cykliczne indeksowanie).
 
 \subsection{Trajektorie celu}
 
@@ -219,21 +221,21 @@ gdzie $\mathbf{p}_{n+1} = \mathbf{p}_1$ (cykliczne indeksowanie).
 
 Cel porusza się ze stałą prędkością:
 \begin{equation}
-\mathbf{v}_t(t) = \mathbf{v}_0 = \text{const}
+\vec{v}_t(t) = \vec{v}_0 = \text{const}
 \end{equation}
 
 \subsubsection{Ruch po okręgu (2D)}
 
 Cel wykonuje ruch jednostajny po okręgu o promieniu $r$ z prędkością kątową $\omega$:
 \begin{equation}
-\mathbf{t}(t) = [r\cos(\omega t), r\sin(\omega t)]^T
+\vec{t}(t) = [r\cos(\omega t), r\sin(\omega t)]^T
 \end{equation}
 
 \subsubsection{Helisa (3D)}
 
 Trajektoria helisoidalna w przestrzeni 3D:
 \begin{equation}
-\mathbf{t}(t) = [r\cos(\omega t), r\sin(\omega t), v_z \cdot t]^T
+\vec{t}(t) = [r\cos(\omega t), r\sin(\omega t), v_z \cdot t]^T
 \end{equation}
 
 gdzie:
@@ -247,7 +249,7 @@ gdzie:
 
 Trajektoria opisana przez niezależne oscylacje harmoniczne w każdej współrzędnej:
 \begin{equation}
-\mathbf{t}(t) = [A_x \sin(\omega_x t), A_y \sin(\omega_y t), A_z \sin(\omega_z t)]^T
+\vec{t}(t) = [A_x \sin(\omega_x t), A_y \sin(\omega_y t), A_z \sin(\omega_z t)]^T
 \end{equation}
 
 gdzie:
@@ -403,11 +405,11 @@ Funkcja \texttt{run\_continuous\_simulation()} przyjmuje:
 
 W podejściu dyskretnym, równania są iterowane z ustalonym krokiem czasowym $\Delta t$:
 \begin{equation}
-\mathbf{p}_{k+1} = \mathbf{p}_k + \Delta t \cdot \mathbf{v}_p(\mathbf{p}_k, \mathbf{t}_k)
+\vec{p}_{k+1} = \vec{p}_k + \Delta t \cdot \vec{v}_p(\vec{p}_k, \vec{t}_k)
 \end{equation}
 
 \begin{equation}
-\mathbf{t}_{k+1} = \mathbf{t}_k + \Delta t \cdot \mathbf{v}_t(\mathbf{t}_k)
+\vec{t}_{k+1} = \vec{t}_k + \Delta t \cdot \vec{v}_t(\vec{t}_k)
 \end{equation}
 
 Podejście dyskretne jest prostsze w implementacji, ale może wprowadzać większe błędy numeryczne przy niewłaściwym doborze $\Delta t$.
