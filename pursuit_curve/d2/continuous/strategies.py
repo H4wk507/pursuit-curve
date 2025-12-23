@@ -196,10 +196,11 @@ class ContinuousTargetCircleStrategy(TargetStrategy):
         self.r = r
 
     def calculate_movement(self, t: float) -> np.ndarray:
+        """Zwraca prędkość celu (pochodną pozycji) w czasie t."""
         return np.array(
             [
-                self.r * math.cos(self.angular_velocity * t),
-                self.r * math.sin(self.angular_velocity * t),
+                -self.r * self.angular_velocity * math.sin(self.angular_velocity * t),
+                self.r * self.angular_velocity * math.cos(self.angular_velocity * t),
             ],
             dtype=np.float32,
         )

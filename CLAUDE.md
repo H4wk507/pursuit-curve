@@ -2,82 +2,76 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Project Overview
-
-This is a Python mathematical simulation library for pursuit curve algorithms. It implements various pursuit strategies (direct pursuit, constant bearing, proportional navigation, cyclic pursuit) in multiple dimensions (2D, 3D, N-dimensional) and geometric spaces (Euclidean, sphere, torus).
-
 ## Development Commands
 
-```bash
-# Environment setup
-uv sync                    # Install dependencies from lockfile
-uv run --with jupyter jupyter notebook  # Start Jupyter notebook
+### Package Management
+- **Install dependencies**: `uv sync` (installs from lockfile)
+- **Run with dependencies**: `uv run <command>` (e.g., `uv run python script.py`)
+- **Jupyter notebook**: `uv run --with jupyter jupyter notebook`
 
-# Code quality
-make lint                  # Run ruff linter
-make format               # Format code with ruff
-make clean                # Remove cache files (__pycache__, .mypy_cache, etc.)
+### Code Quality
+- **Lint code**: `make lint` or `ruff check .`
+- **Format code**: `make format` or `ruff format .`
+- **Clean cache**: `make clean` (removes __pycache__, .mypy_cache, .ruff_cache)
 
-# Documentation
-make tex                  # Compile LaTeX documentation to PDF
+### Documentation
+- **Build LaTeX docs**: `make tex` (compiles dokumentacja.tex to PDF)
+
+## Project Architecture
+
+### Core Structure
+The project implements pursuit curve algorithms across multiple dimensions and geometric spaces:
+
+```
+pursuit_curve/
+├── common/           # Shared types and simulation framework
+├── d2/              # 2D pursuit algorithms
+├── d3/              # 3D pursuit algorithms  
+├── dn/              # N-dimensional pursuit algorithms
+├── sphere/          # Spherical geometry pursuit
+├── torus/           # Torus geometry pursuit
+└── examples/        # Demonstration scripts
 ```
 
-## Architecture & Structure
+### Key Components
 
-### Core Components
+**Base Types** (`common/types.py`):
+- `Strategy` ABC: Defines `dynamics()` and `stop_condition()` for ODE solvers
+- `TargetStrategy` ABC: Defines target movement patterns
+- `Point2D`, `Point3D`, `PointND`: Coordinate representations
 
-**Strategy Pattern Implementation:**
-- `pursuit_curve/common/types.py` - Base abstract classes `Strategy` and `TargetStrategy`
-- Each dimension/geometry implements these interfaces with specific pursuit algorithms
+**Simulation Framework** (`common/continuous_simulation.py`):
+- `run_continuous_simulation()`: Uses scipy's `solve_ivp` with event detection
+- Integrates pursuit strategies with configurable time spans and step sizes
 
-**Modular Organization by Dimension/Geometry:**
-- `pursuit_curve/d2/` - 2D Euclidean space (discrete & continuous)
-- `pursuit_curve/d3/` - 3D Euclidean space (continuous only)  
-- `pursuit_curve/dn/` - N-dimensional space (continuous only)
-- `pursuit_curve/sphere/` - Spherical geometry (S²)
-- `pursuit_curve/torus/` - Toroidal geometry
+**Pursuit Strategies** (`*/strategies.py`):
+- **Direct Pursuit**: Moves directly toward target
+- **Constant Bearing**: Maintains fixed angle relative to target direction
+- **Proportional Navigation**: Used in missile guidance systems
+- **Cyclic Pursuit**: N objects chasing each other in sequence
 
-**Simulation Types:**
-- `discrete/` - Step-by-step discrete simulations
-- `continuous/` - ODE-based continuous simulations using `scipy.integrate.solve_ivp`
+**Geometric Variants**:
+- **2D/3D Euclidean**: Standard Cartesian coordinate systems
+- **Spherical**: Great circle distances on sphere surface
+- **Torus**: Pursuit on torus manifold with periodic boundary conditions
+- **N-dimensional**: Generalized to arbitrary dimensions
 
-### Key Pursuit Strategies
+### Animation System
+Each geometry module includes visualization:
+- matplotlib-based animations with trajectory trails
+- 3D plotting for sphere/torus geometries
+- Real-time parameter adjustment capabilities
 
-1. **Direct Pursuit** - Pursuer moves directly toward target
-2. **Constant Bearing** - Pursuer maintains constant angle offset
-3. **Proportional Navigation** - Used in missiles; angular velocity proportional to line-of-sight rate
-4. **Cyclic Pursuit** - N objects in circle, each chasing the next
+### Mathematical Foundation
+The project implements differential equation systems where:
+- State vector: `[pursuer_coords..., target_coords...]`
+- Dynamics: `dy/dt = strategy.dynamics(t, y)`
+- Termination: `strategy.stop_condition(t, y) = 0` (distance threshold)
 
-### Simulation Framework
+## Key Implementation Notes
 
-**Continuous Simulations:**
-- Use `run_continuous_simulation()` from `pursuit_curve.common`
-- Implement `Strategy.dynamics(t, y)` returning derivatives for ODE solver
-- Implement `Strategy.stop_condition(t, y)` for termination events
-
-**Animation System:**
-- Each module provides `animate_*` functions using matplotlib
-- Support for interactive animations in Jupyter notebooks
-- 3D visualizations use plotly for spherical/toroidal geometries
-
-### Mathematical Foundations
-
-The library implements pursuit curves as systems of differential equations. For 2D direct pursuit:
-- `dx_p/dt = v_p * (target - pursuer) / ||target - pursuer||`
-- Target movement defined by `TargetStrategy`
-
-Supports various target movement patterns:
-- Linear motion (`ContinuousTargetLinearStrategy`)
-- Circular motion (`ContinuousTargetCircleStrategy`) 
-- Custom spherical/toroidal geodesics
-
-### Examples Usage Pattern
-
-All examples follow this pattern:
-1. Import required strategies and animation functions
-2. Define initial state (positions in flattened array format)
-3. Create strategy with pursuer velocity and target movement
-4. Run simulation with `run_continuous_simulation(initial_state, strategy, t_span)`
-5. Animate results with appropriate animation function
-
-The main entry point is `main.ipynb` which demonstrates discrete vs continuous comparison.
+- Uses `scipy.integrate.solve_ivp` for numerical integration
+- Event-driven simulation termination when pursuer reaches target
+- Strategy pattern allows swapping pursuit algorithms without changing simulation code
+- NumPy arrays used throughout for efficient vector operations
+- Type hints and dataclasses for better code clarity

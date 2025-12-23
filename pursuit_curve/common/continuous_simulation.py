@@ -8,12 +8,16 @@ def run_continuous_simulation(
     strategy: Strategy,
     t_span: tuple[float, float] = (0, 50),
     max_step: float = 0.1,
+    rtol: float = 1e-3,
+    atol: float = 1e-6,
 ):
     """
     initial_state: [pursuer_x, pursuer_y, ..., target_x, target_y, ...]
     strategy: Strategia z metodami dynamics() i stop_condition()
     t_span: Przedział czasu (t_start, t_end)
     max_step: Maksymalny krok czasowy solwera
+    rtol: Względna tolerancja błędu
+    atol: Bezwzględna tolerancja błędu
     """
     solution = solve_ivp(
         fun=strategy.dynamics,
@@ -22,6 +26,8 @@ def run_continuous_simulation(
         events=strategy.stop_condition,
         dense_output=True,
         max_step=max_step,
+        rtol=rtol,
+        atol=atol,
     )
 
     print(f"Symulacja zakończona w czasie t={solution.t[-1]:.2f}s")

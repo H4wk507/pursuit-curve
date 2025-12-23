@@ -59,9 +59,8 @@ class ContinuousTargetLinearStrategy3D(TargetStrategy):
 class ContinuousTargetHelixStrategy(TargetStrategy):
     """Strategia dla celu poruszającego się po helisie."""
 
-    # x(t) = rcos(ωt)
-    # y(t) = rsin(ωt)
-    # z(t) = v_z*t
+    # Pozycja: x(t) = rcos(ωt), y(t) = rsin(ωt), z(t) = v_z*t
+    # Prędkość: dx/dt = -rω*sin(ωt), dy/dt = rω*cos(ωt), dz/dt = v_z
 
     def __init__(self, r: float, angular_velocity: float, vertical_velocity: float):
         self.r = r
@@ -69,11 +68,13 @@ class ContinuousTargetHelixStrategy(TargetStrategy):
         self.vertical_velocity = vertical_velocity
 
     def calculate_movement(self, t: float) -> np.ndarray:
+        """Zwraca prędkość celu (pochodną pozycji) w czasie t."""
+        omega = self.angular_velocity
         return np.array(
             [
-                self.r * math.cos(self.angular_velocity * t),
-                self.r * math.sin(self.angular_velocity * t),
-                self.vertical_velocity * t,
+                -self.r * omega * math.sin(omega * t),
+                self.r * omega * math.cos(omega * t),
+                self.vertical_velocity,
             ],
             dtype=np.float32,
         )
@@ -82,20 +83,20 @@ class ContinuousTargetHelixStrategy(TargetStrategy):
 class ContinuousTargetLissajousStrategy(TargetStrategy):
     """Strategia dla celu poruszającego się po krzywej Lissajous."""
 
-    # x(t) = A_x*sin(ω_x*t)
-    # y(t) = A_y*sin(ω_y*t)
-    # z(t) = A_z*sin(ω_z*t)
+    # Pozycja: x(t) = A_x*sin(ω_x*t), y(t) = A_y*sin(ω_y*t), z(t) = A_z*sin(ω_z*t)
+    # Prędkość: dx/dt = A_x*ω_x*cos(ω_x*t), dy/dt = A_y*ω_y*cos(ω_y*t), dz/dt = A_z*ω_z*cos(ω_z*t)
 
     def __init__(self, A: Point3D, angular_velocity: Point3D):
         self.A = A
         self.angular_velocity = angular_velocity
 
     def calculate_movement(self, t: float) -> np.ndarray:
+        """Zwraca prędkość celu (pochodną pozycji) w czasie t."""
         return np.array(
             [
-                self.A.x * math.sin(self.angular_velocity.x * t),
-                self.A.y * math.sin(self.angular_velocity.y * t),
-                self.A.z * math.sin(self.angular_velocity.z * t),
+                self.A.x * self.angular_velocity.x * math.cos(self.angular_velocity.x * t),
+                self.A.y * self.angular_velocity.y * math.cos(self.angular_velocity.y * t),
+                self.A.z * self.angular_velocity.z * math.cos(self.angular_velocity.z * t),
             ],
             dtype=np.float32,
         )

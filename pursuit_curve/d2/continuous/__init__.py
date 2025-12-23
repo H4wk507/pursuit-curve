@@ -6,6 +6,7 @@ from .strategies import (
     ContinuousDirectPursuit,
     ContinuousProportionalNavigation,
     ContinuousTargetCircleStrategy,
+    ContinuousTargetLinearStrategy,
 )
 
 __all__ = [
@@ -16,4 +17,5 @@ __all__ = [
     "ContinuousTargetCircleStrategy",
     "ContinuousCyclicPursuit",
     "cyclic_pursuit_animation",
+    "ContinuousTargetLinearStrategy",
 ]
