@@ -8,10 +8,14 @@ from .types import Strategy, TargetStrategy
 class DirectPursuit(Strategy):
     """Kierunek wprost na cel."""
 
-    def calculate_movement(self, pursuer: Point2D, target: Point2D, pursuer_velocity: Point2D) -> Point2D:
+    def calculate_movement(
+        self, pursuer: Point2D, target: Point2D, pursuer_velocity: Point2D, dt: float
+    ) -> Point2D:
         w = target - pursuer
         norm = (w.x * w.x + w.y * w.y) ** 0.5
-        return Point2D(pursuer_velocity.x * w.x / norm, pursuer_velocity.y * w.y / norm)
+        return Point2D(
+            pursuer_velocity.x * w.x / norm * dt, pursuer_velocity.y * w.y / norm * dt
+        )
 
 
 class ConstantBearing(Strategy):
@@ -20,13 +24,15 @@ class ConstantBearing(Strategy):
     def __init__(self, bearing_angle_deg: float):
         self.bearing_angle = math.radians(bearing_angle_deg)
 
-    def calculate_movement(self, pursuer: Point2D, target: Point2D, pursuer_velocity: Point2D) -> Point2D:
+    def calculate_movement(
+        self, pursuer: Point2D, target: Point2D, pursuer_velocity: Point2D, dt: float
+    ) -> Point2D:
         w = target - pursuer
         angle_to_target = math.atan2(w.y, w.x)
         movement_angle = angle_to_target + self.bearing_angle
         return Point2D(
-            pursuer_velocity.x * math.cos(movement_angle),
-            pursuer_velocity.y * math.sin(movement_angle),
+            pursuer_velocity.x * math.cos(movement_angle) * dt,
+            pursuer_velocity.y * math.sin(movement_angle) * dt,
         )
 
 
@@ -42,7 +48,9 @@ class ProportionalNavigation(Strategy):
         self.previous_los_angle: float | None = None
         self.previous_pursuer_vel: Point2D | None = None
 
-    def calculate_movement(self, pursuer: Point2D, target: Point2D, pursuer_velocity: Point2D) -> Point2D:
+    def calculate_movement(
+        self, pursuer: Point2D, target: Point2D, pursuer_velocity: Point2D, dt: float
+    ) -> Point2D:
         w = target - pursuer
 
         los_angle = math.atan2(w.y, w.x)
@@ -52,7 +60,7 @@ class ProportionalNavigation(Strategy):
                 pursuer_velocity.x * math.cos(los_angle),
                 pursuer_velocity.y * math.sin(los_angle),
             )
-            return self.previous_pursuer_vel
+            return self.previous_pursuer_vel * dt
 
         delta_los_angle = los_angle - self.previous_los_angle
         while delta_los_angle > math.pi:
@@ -73,18 +81,19 @@ class ProportionalNavigation(Strategy):
 
         self.previous_los_angle = los_angle
         self.previous_pursuer_vel = new_vel
-        return new_vel
+        return new_vel * dt
 
 
 class TargetCircleStrategy(TargetStrategy):
     """Strategia dla celu poruszającego się po okręgu."""
 
-    def __init__(self, angular_velocity: float, dt: float):
+    def __init__(self, angular_velocity: float):
         self.angular_velocity = angular_velocity
-        self.dt = dt
 
-    def calculate_movement(self, target: Point2D) -> Point2D:
+    def calculate_movement(self, target: Point2D, dt: float) -> Point2D:
         return Point2D(
-            target.x * math.cos(self.angular_velocity * self.dt) - target.y * math.sin(self.angular_velocity * self.dt),
-            target.x * math.sin(self.angular_velocity * self.dt) + target.y * math.cos(self.angular_velocity * self.dt),
+            target.x * math.cos(self.angular_velocity * dt)
+            - target.y * math.sin(self.angular_velocity * dt),
+            target.x * math.sin(self.angular_velocity * dt)
+            + target.y * math.cos(self.angular_velocity * dt),
         )

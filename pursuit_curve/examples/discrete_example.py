@@ -15,8 +15,9 @@ sim = Simulation(
     target_start=Point2D(0.0, 1.0),
     pursuer_velocity=Point2D(1.5, 1.5),
     strategy=DirectPursuit(),
-    target_strategy=TargetCircleStrategy(angular_velocity=0.1, dt=1.0),
-    max_iters=100,
+    target_strategy=TargetCircleStrategy(angular_velocity=0.1),
+    dt=0.1,
+    max_iters=1000,
 )
 sim.run()
 animate_pursuit(sim)
