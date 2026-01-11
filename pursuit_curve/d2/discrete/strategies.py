@@ -8,14 +8,10 @@ from .types import Strategy, TargetStrategy
 class DirectPursuit(Strategy):
     """Kierunek wprost na cel."""
 
-    def calculate_movement(
-        self, pursuer: Point2D, target: Point2D, pursuer_velocity: Point2D, dt: float
-    ) -> Point2D:
+    def calculate_movement(self, pursuer: Point2D, target: Point2D, pursuer_velocity: Point2D, dt: float) -> Point2D:
         w = target - pursuer
         norm = (w.x * w.x + w.y * w.y) ** 0.5
-        return Point2D(
-            pursuer_velocity.x * w.x / norm * dt, pursuer_velocity.y * w.y / norm * dt
-        )
+        return Point2D(pursuer_velocity.x * w.x / norm * dt, pursuer_velocity.y * w.y / norm * dt)
 
 
 class ConstantBearing(Strategy):
@@ -24,9 +20,7 @@ class ConstantBearing(Strategy):
     def __init__(self, bearing_angle_deg: float):
         self.bearing_angle = math.radians(bearing_angle_deg)
 
-    def calculate_movement(
-        self, pursuer: Point2D, target: Point2D, pursuer_velocity: Point2D, dt: float
-    ) -> Point2D:
+    def calculate_movement(self, pursuer: Point2D, target: Point2D, pursuer_velocity: Point2D, dt: float) -> Point2D:
         w = target - pursuer
         angle_to_target = math.atan2(w.y, w.x)
         movement_angle = angle_to_target + self.bearing_angle
@@ -48,9 +42,7 @@ class ProportionalNavigation(Strategy):
         self.previous_los_angle: float | None = None
         self.previous_pursuer_vel: Point2D | None = None
 
-    def calculate_movement(
-        self, pursuer: Point2D, target: Point2D, pursuer_velocity: Point2D, dt: float
-    ) -> Point2D:
+    def calculate_movement(self, pursuer: Point2D, target: Point2D, pursuer_velocity: Point2D, dt: float) -> Point2D:
         w = target - pursuer
 
         los_angle = math.atan2(w.y, w.x)
@@ -92,8 +84,6 @@ class TargetCircleStrategy(TargetStrategy):
 
     def calculate_movement(self, target: Point2D, dt: float) -> Point2D:
         return Point2D(
-            target.x * math.cos(self.angular_velocity * dt)
-            - target.y * math.sin(self.angular_velocity * dt),
-            target.x * math.sin(self.angular_velocity * dt)
-            + target.y * math.cos(self.angular_velocity * dt),
+            target.x * math.cos(self.angular_velocity * dt) - target.y * math.sin(self.angular_velocity * dt),
+            target.x * math.sin(self.angular_velocity * dt) + target.y * math.cos(self.angular_velocity * dt),
         )

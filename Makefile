@@ -8,4 +8,7 @@ format:
 	ruff format .
 
 tex:
-	pdflatex dokumentacja.tex
+	cd docs && pdflatex dokumentacja.tex
+
+prez:
+	cd docs && pdflatex prezentacja.tex

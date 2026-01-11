@@ -9,7 +9,7 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
 
-sys.path.insert(0, str(Path(__file__).parent.parent))
+sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 from pursuit_curve.common import run_continuous_simulation
 from pursuit_curve.sphere.continuous import (
@@ -142,12 +142,28 @@ def generate_sphere_pursuit_3d():
 
         # Punkty startowe (większe)
         ax.scatter(
-            [px[0]], [py[0]], [pz[0]], color="#2563eb", s=150, marker="o", edgecolors="white", linewidth=2, zorder=5,
-            label="Start ścigającego"
+            [px[0]],
+            [py[0]],
+            [pz[0]],
+            color="#2563eb",
+            s=150,
+            marker="o",
+            edgecolors="white",
+            linewidth=2,
+            zorder=5,
+            label="Start ścigającego",
         )
         ax.scatter(
-            [tx[0]], [ty[0]], [tz[0]], color="#dc2626", s=150, marker="s", edgecolors="white", linewidth=2, zorder=5,
-            label="Start celu"
+            [tx[0]],
+            [ty[0]],
+            [tz[0]],
+            color="#dc2626",
+            s=150,
+            marker="s",
+            edgecolors="white",
+            linewidth=2,
+            zorder=5,
+            label="Start celu",
         )
 
         # Punkt przechwycenia (znacznie większy)

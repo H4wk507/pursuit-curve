@@ -5,10 +5,11 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 # Add project root to path
-sys.path.insert(0, str(Path(__file__).parent.parent))
+sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 from pursuit_curve.common.continuous_simulation import run_continuous_simulation
-from pursuit_curve.common.types import Point2D, Strategy as ContinuousStrategy, TargetStrategy as ContinuousTargetStrategy
+from pursuit_curve.common.types import Point2D
+from pursuit_curve.common.types import TargetStrategy as ContinuousTargetStrategy
 from pursuit_curve.d2.continuous.strategies import (
     ContinuousDirectPursuit,
 )
@@ -29,6 +30,7 @@ STOP_RADIUS = 0.5
 
 
 # --- 1. Run Continuous Simulation (Ground Truth) ---
+
 
 # Define a target strategy for the continuous simulation that respects the initial phase
 class TargetCircularWithPhase(ContinuousTargetStrategy):
@@ -54,13 +56,9 @@ class TargetCircularWithPhase(ContinuousTargetStrategy):
 
 print("Running continuous simulation...")
 # This strategy object contains all the logic for the solver
-continuous_target_strategy = TargetCircularWithPhase(
-    TARGET_ANGULAR_VELOCITY, TARGET_RADIUS, TARGET_INITIAL_PHASE
-)
+continuous_target_strategy = TargetCircularWithPhase(TARGET_ANGULAR_VELOCITY, TARGET_RADIUS, TARGET_INITIAL_PHASE)
 # The continuous pursuit strategy needs the target strategy to calculate the full dynamics
-continuous_pursuit_strategy = ContinuousDirectPursuit(
-    Point2D(PURSUER_SPEED, PURSUER_SPEED), continuous_target_strategy
-)
+continuous_pursuit_strategy = ContinuousDirectPursuit(Point2D(PURSUER_SPEED, PURSUER_SPEED), continuous_target_strategy)
 
 # Set up the initial state vector for the solver
 initial_state = [PURSUER_START.x, PURSUER_START.y, TARGET_START.x, TARGET_START.y]
@@ -69,7 +67,7 @@ solution = run_continuous_simulation(
     initial_state=initial_state,
     strategy=continuous_pursuit_strategy,
     t_span=(0, T_MAX),
-    max_step=0.01, # Use small steps for a good reference curve
+    max_step=0.01,  # Use small steps for a good reference curve
 )
 
 # Extract continuous data
@@ -89,7 +87,7 @@ for dt in DT_VALUES:
     # The discrete target strategy implicitly uses the initial position as the starting point
     # of the rotation, which is what we want.
     discrete_target_strat = DiscreteTargetCircular(TARGET_ANGULAR_VELOCITY)
-    
+
     discrete_sim = DiscreteSimulation(
         pursuer_start=Point2D(PURSUER_START.x, PURSUER_START.y),
         target_start=Point2D(TARGET_START.x, TARGET_START.y),
@@ -175,7 +173,7 @@ for dt in DT_VALUES:
     final_pos_discrete = pursuer_discrete[:, -1]
     num_steps = pursuer_discrete.shape[1] - 1
     final_time_discrete = num_steps * dt
-    
+
     error = np.linalg.norm(final_pos_continuous - final_pos_discrete)
-    
+
     print(f"dt={dt:>4.2f}s | Czas: {final_time_discrete:.4f}s | Błąd pozycji końcowej: {error:.4f} m")

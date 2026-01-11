@@ -10,7 +10,7 @@ from pathlib import Path
 import numpy as np
 from scipy.integrate._ivp.ivp import OdeResult
 
-sys.path.insert(0, str(Path(__file__).parent.parent))
+sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 from pursuit_curve.common import Point2D, Point3D, PointND, run_continuous_simulation
 from pursuit_curve.d2.continuous import (
@@ -347,7 +347,7 @@ def calculate_helix_pursuit_values():
         strategy = ContinuousDirectPursuit3D(
             pursuer_velocity=Point3D(pursuer_speed, pursuer_speed, pursuer_speed),
             target_strategy=target_strategy,
-            capture_distance=0.01
+            capture_distance=0.01,
         )
 
         try:
@@ -641,7 +641,7 @@ def calculate_sphere_pursuit_values():
             dphi_traj = np.diff(pursuer_phi)
             # Przybliżona długość łukowa na sferze jednostkowej
             sin_theta_avg = np.sin((pursuer_theta[:-1] + pursuer_theta[1:]) / 2)
-            segment_lengths = np.sqrt(dtheta_traj**2 + (sin_theta_avg * dphi_traj)**2)
+            segment_lengths = np.sqrt(dtheta_traj**2 + (sin_theta_avg * dphi_traj) ** 2)
             trajectory_length = float(np.sum(segment_lengths))
 
             # Liczba okrążeń (przybliżona - bazując na phi)

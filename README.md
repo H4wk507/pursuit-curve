@@ -1,50 +1,53 @@
-## Setup
+# Krzywe Pościgu
 
-1. Install uv package manager.
+Ten projekt eksploruje i implementuje różne algorytmy do rozwiązywania problemów związanych z krzywymi pościgu. Dostarcza framework do symulacji scenariuszy pościgu w różnych wymiarach i na różnych powierzchniach geometrycznych.
+
+## Instalacja
+
+1. Zainstaluj menedżer pakietów `uv`:
 
 ```bash
 curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 
-2. Sync deps from the lockfile.
+2. Zsynchronizuj zależności z pliku lockfile:
 
 ```bash
 uv sync
 ```
 
-3. Run Jupyter Notebook from the commandline
+3. Uruchom Jupyter Notebook z linii poleceń:
 
 ```bash
 uv run --with jupyter jupyter notebook
 ```
 
-or just inside VSCode with correct venv.
+lub bezpośrednio w VSCode z odpowiednim środowiskiem wirtualnym.
 
-## Project Structure
+## Struktura Projektu
 
-The project is organized into several directories, each with a specific purpose.
+Projekt jest zorganizowany w kilka katalogów, z których każdy ma określone przeznaczenie:
 
 ```
 .
 ├── pursuit_curve/
-│   ├── common/           # Shared types and simulation framework
-│   ├── d2/               # 2D pursuit algorithms (discrete and continuous)
-│   ├── d3/               # 3D pursuit algorithms (continuous)
-│   ├── dn/               # N-dimensional pursuit algorithms (continuous)
-│   ├── sphere/           # Pursuit algorithms on a sphere
-│   ├── torus/            # Pursuit algorithms on a torus
-│   └── examples/         # Example scripts demonstrating different simulations
-├── scripts/              # Scripts for generating figures and values for documentation
-├── figures/              # Output directory for generated figures
-├── main.ipynb            # Jupyter Notebook for experimentation
-├── dokumentacja.tex      # LaTeX source for the project documentation
-├── Makefile              # Makefile with commands for linting, formatting, etc.
-└── pyproject.toml        # Project configuration and dependencies
+│   ├── common/           # Współdzielone typy i framework symulacji
+│   ├── d2/               # Algorytmy pościgu 2D (dyskretne i ciągłe)
+│   ├── d3/               # Algorytmy pościgu 3D (ciągłe)
+│   ├── dn/               # Algorytmy pościgu n-wymiarowe (ciągłe)
+│   ├── sphere/           # Algorytmy pościgu na sferze
+│   ├── torus/            # Algorytmy pościgu na torusie
+│   └── examples/         # Przykładowe skrypty demonstracyjne
+├── docs/                 # Pliki dokumentacji
+│   ├── dokumentacja.tex  # Źródło LaTeX dokumentacji projektu
+│   ├── prezentacja.tex   # Źródło LaTeX prezentacji
+│   ├── scripts/          # Skrypty do generowania figur i wartości
+│   ├── figures/          # Katalog wyjściowy dla wygenerowanych figur
+│   └── images/           # Obrazy do dokumentacji
+├── playground.ipynb      # Notatnik Jupyter do eksperymentów
+├── Makefile              # Makefile z poleceniami do lintowania, formatowania itp.
+└── pyproject.toml        # Konfiguracja projektu i zależności
 ```
-
-## Opis Projektu
-
-Ten projekt eksploruje i implementuje różne algorytmy do rozwiązywania problemów związanych z krzywymi pościgowymi. Dostarcza framework do symulacji scenariuszy pościgowych w różnych wymiarach i na różnych powierzchniach geometrycznych.
 
 ## Kluczowe Funkcjonalności
 
@@ -62,7 +65,7 @@ Ten projekt eksploruje i implementuje różne algorytmy do rozwiązywania proble
 
 ## Uruchamianie Przykładów
 
-Przykładowe skrypty znajdują się w katalogu `pursuit_curve/examples/`. Aby uruchomić jeden z nich, użyj `uv run`:
+Przykładowe skrypty znajdują się w katalogu `pursuit_curve/examples/`. Aby uruchomić jeden z nich:
 
 ```bash
 uv run python pursuit_curve/examples/2d_continuous_direct_pursuit_example.py
@@ -72,16 +75,17 @@ uv run python pursuit_curve/examples/2d_continuous_direct_pursuit_example.py
 
 Projekt wykorzystuje `Makefile` do typowych zadań deweloperskich:
 
-- `make lint`: Sprawdza jakość kodu za pomocą `ruff`.
-- `make format`: Formatuje kod za pomocą `ruff`.
-- `make clean`: Usuwa pliki cache.
+- `make lint` - sprawdza jakość kodu za pomocą `ruff`
+- `make format` - formatuje kod za pomocą `ruff`
+- `make clean` - usuwa pliki cache
 
 ## Generowanie Dokumentacji
 
-Dokumentacja projektu jest pisana w LaTeX. Aby wygenerować plik PDF:
+Dokumentacja projektu jest pisana w LaTeX. Aby wygenerować pliki PDF:
 
 ```bash
-make tex
+make tex   # kompiluje dokumentację
+make prez  # kompiluje prezentację
 ```
 
-Wygenerowany plik `dokumentacja.pdf` pojawi się w głównym katalogu projektu.
+Wygenerowane pliki PDF pojawią się w katalogu `docs/`.

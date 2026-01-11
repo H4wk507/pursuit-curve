@@ -15,7 +15,7 @@ strategy = ContinuousDirectPursuit3D(
     target_strategy=ContinuousTargetLissajousStrategy(
         A=Point3D(5.0, 5.0, 5.0),
         angular_velocity=Point3D(2.0, 3.0, 5.0),
-    )
+    ),
 )
 solution = run_continuous_simulation(initial_state, strategy, t_span=(0, 120))
 animate_continuous_pursuit_3d(solution, num_frames=200)

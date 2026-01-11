@@ -8,7 +8,7 @@ from pathlib import Path
 
 import numpy as np
 
-sys.path.insert(0, str(Path(__file__).parent.parent))
+sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 from pursuit_curve.common import run_continuous_simulation
 from pursuit_curve.sphere.continuous import ContinuousDirectPursuitSphere, ContinuousTargetSphereStrategy
@@ -50,7 +50,7 @@ for ratio in velocity_ratios:
         dtheta_traj = np.diff(pursuer_theta)
         dphi_traj = np.diff(pursuer_phi)
         sin_theta_avg = np.sin((pursuer_theta[:-1] + pursuer_theta[1:]) / 2)
-        segment_lengths = np.sqrt(dtheta_traj**2 + (sin_theta_avg * dphi_traj)**2)
+        segment_lengths = np.sqrt(dtheta_traj**2 + (sin_theta_avg * dphi_traj) ** 2)
         trajectory_length = float(np.sum(segment_lengths))
 
         total_phi_change = np.abs(pursuer_phi[-1] - pursuer_phi[0])

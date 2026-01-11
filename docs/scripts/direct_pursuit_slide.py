@@ -9,7 +9,7 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
 
-sys.path.insert(0, str(Path(__file__).parent.parent))
+sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 from pursuit_curve.common import Point2D, run_continuous_simulation
 from pursuit_curve.d2.continuous import (
@@ -45,23 +45,35 @@ def generate_direct_pursuit_image():
     fig, ax = plt.subplots(figsize=(10, 7))
 
     # Trajektoria celu (linia prosta) - czerwona
-    ax.plot(target_x, target_y, 'r-', linewidth=2.5, label='Cel (ruch liniowy)', zorder=2)
+    ax.plot(target_x, target_y, "r-", linewidth=2.5, label="Cel (ruch liniowy)", zorder=2)
 
     # Trajektoria ścigającego (krzywa pościgu) - niebieska
-    ax.plot(pursuer_x, pursuer_y, 'b-', linewidth=2.5, label='Ścigający (direct pursuit)', zorder=2)
+    ax.plot(pursuer_x, pursuer_y, "b-", linewidth=2.5, label="Ścigający (direct pursuit)", zorder=2)
 
     # Punkty startowe
-    ax.plot(pursuer_x[0], pursuer_y[0], 'bo', markersize=12, zorder=3)
-    ax.plot(target_x[0], target_y[0], 'ro', markersize=12, zorder=3)
+    ax.plot(pursuer_x[0], pursuer_y[0], "bo", markersize=12, zorder=3)
+    ax.plot(target_x[0], target_y[0], "ro", markersize=12, zorder=3)
 
     # Etykiety punktów startowych
-    ax.annotate('Start P', (pursuer_x[0], pursuer_y[0]),
-                textcoords="offset points", xytext=(-15, -20), fontsize=11, fontweight='bold')
-    ax.annotate('Start C', (target_x[0], target_y[0]),
-                textcoords="offset points", xytext=(10, 10), fontsize=11, fontweight='bold')
+    ax.annotate(
+        "Start P",
+        (pursuer_x[0], pursuer_y[0]),
+        textcoords="offset points",
+        xytext=(-15, -20),
+        fontsize=11,
+        fontweight="bold",
+    )
+    ax.annotate(
+        "Start C",
+        (target_x[0], target_y[0]),
+        textcoords="offset points",
+        xytext=(10, 10),
+        fontsize=11,
+        fontweight="bold",
+    )
 
     # Punkt końcowy (przechwycenie)
-    ax.plot(pursuer_x[-1], pursuer_y[-1], 'g*', markersize=18, zorder=4, label='Przechwycenie')
+    ax.plot(pursuer_x[-1], pursuer_y[-1], "g*", markersize=18, zorder=4, label="Przechwycenie")
 
     # Dodanie wektorów prędkości ścigającego (kierunek na cel) co jakiś krok
     num_arrows = 6
@@ -76,17 +88,27 @@ def generate_direct_pursuit_image():
             # Normalizuj i skaluj do stałej długości
             dx_norm = (dx / dist) * arrow_length
             dy_norm = (dy / dist) * arrow_length
-            ax.arrow(pursuer_x[i], pursuer_y[i], dx_norm, dy_norm,
-                    head_width=0.4, head_length=0.25, fc='navy', ec='navy',
-                    alpha=0.85, zorder=5, linewidth=2)
+            ax.arrow(
+                pursuer_x[i],
+                pursuer_y[i],
+                dx_norm,
+                dy_norm,
+                head_width=0.4,
+                head_length=0.25,
+                fc="navy",
+                ec="navy",
+                alpha=0.85,
+                zorder=5,
+                linewidth=2,
+            )
 
     # Ustawienia wykresu
-    ax.set_xlabel('X', fontsize=13)
-    ax.set_ylabel('Y', fontsize=13)
-    ax.set_title('Pościg bezpośredni (Direct Pursuit)', fontsize=15, fontweight='bold')
-    ax.legend(loc='lower right', fontsize=11)
+    ax.set_xlabel("X", fontsize=13)
+    ax.set_ylabel("Y", fontsize=13)
+    ax.set_title("Pościg bezpośredni (Direct Pursuit)", fontsize=15, fontweight="bold")
+    ax.legend(loc="lower right", fontsize=11)
     ax.grid(True, alpha=0.3)
-    ax.set_aspect('equal')
+    ax.set_aspect("equal")
 
     # Marginesy
     margin = 1.0
@@ -98,9 +120,9 @@ def generate_direct_pursuit_image():
     plt.tight_layout()
 
     # Zapis do pliku PDF
-    output_path = Path(__file__).parent.parent / 'figures' / 'direct_pursuit_linear.pdf'
+    output_path = Path(__file__).parent.parent / "figures" / "direct_pursuit_linear.pdf"
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    plt.savefig(output_path, bbox_inches='tight', facecolor='white')
+    plt.savefig(output_path, bbox_inches="tight", facecolor="white")
     print(f"Obrazek zapisany: {output_path}")
 
 
