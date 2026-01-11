@@ -88,16 +88,16 @@
 
 gdzie:
 \begin{itemize}
-    \item $\vec{p}$ -- pozycja ścigającego
-    \item $\vec{t}$ -- pozycja celu
-    \item $v_p$ -- prędkość ścigającego
+    \item $\vec{p}$ - pozycja ścigającego
+    \item $\vec{t}$ - pozycja celu
+    \item $v_p$ - prędkość ścigającego
 \end{itemize}
 
 \vspace{0.3cm}
 \textbf{Warunek przechwycenia:} $v_p > v_t$ (ścigający szybszy od celu)
 \end{frame}
 
-\begin{frame}{Pościg bezpośredni -- wizualizacja}
+\begin{frame}{Pościg bezpośredni - wizualizacja}
 \small
 Parametry: $v_p = 1.3$ m/s, $\vec{v}_t = (1.0, 0)$ m/s
 
@@ -121,7 +121,7 @@ Trajektoria tworzy \textbf{spiralę logarytmiczną}.
 
 \end{frame}
 
-\begin{frame}{Stały kąt namiarowania -- wizualizacja}
+\begin{frame}{Stały kąt namiarowania - wizualizacja}
 \small
 Parametry: $v_p = 2.0$ m/s, $\vec{v}_t = (0.8, 0.6)$ m/s
 
@@ -149,16 +149,16 @@ Strategia szeroko stosowana w \textbf{naprowadzaniu pocisków}.
 \theta_{\text{new}} = \theta_{\text{current}} + N \cdot \Delta\lambda
 \end{equation*}
 
-gdzie $N$ -- stała nawigacji (typowo 3--5). \textbf{Optymalna wartość:} $N \in [3, 4]$.
+gdzie $N$ - stała nawigacji (typowo 3-5). \textbf{Optymalna wartość:} $N \in [3, 4]$.
 \end{frame}
 
-\begin{frame}{Porównanie strategii -- wyniki liczbowe}
+\begin{frame}{Porównanie strategii - wyniki liczbowe}
 \centering
 \tablefontsize
 \begin{tabular}{@{}llll@{}}
 \toprule
 \textbf{Strategia} & \textbf{Parametr} & \textbf{Wydłużenie trajektorii} & \textbf{Stabilność} \\ \midrule
-Direct Pursuit & -- & $1.0$ (baseline) & Stabilna \\
+Direct Pursuit & - & $1.0$ (baseline) & Stabilna \\
 \multirow{3}{*}{Constant Bearing} & $\beta = 15°$ & $1.098 \pm 0.05$ & Stabilna \\
 & $\beta = 30°$ & $1.438 \pm 0.05$ & Stabilna \\
 & $\beta = 45°$ & $2.185 \pm 0.05$ & Średnia \\
@@ -172,7 +172,7 @@ Direct Pursuit & -- & $1.0$ (baseline) & Stabilna \\
 \textbf{Wniosek:} Nawigacja proporcjonalna daje najkrótsze trajektorie, ale Direct Pursuit jest prostszy w implementacji.
 \end{frame}
 
-\begin{frame}{Porównanie strategii -- cel liniowy}
+\begin{frame}{Porównanie strategii - cel liniowy}
 \small
 Parametry: $v_p = 2.0$ m/s, $\vec{v}_t = (0.8, 0.6)$ m/s
 
@@ -196,13 +196,13 @@ $\rho \gg 1$ & $\approx d_0/v_p$ & Zbieżność do ruchu prostoliniowego \\ \bot
 
 \vspace{0.5cm}
 \normalsize
-gdzie $T_{\text{orbit}} = 2\pi r / v_t$ -- okres orbitowania celu, $d_0$ -- początkowa odległość ścigający-cel.
+gdzie $T_{\text{orbit}} = 2\pi r / v_t$ - okres orbitowania celu, $d_0$ - początkowa odległość ścigający-cel.
 
 \vspace{0.3cm}
 \textbf{Krytyczna prędkość:} Dla celu na okręgu o promieniu $r$ z $\omega$: \ $v_p > r \cdot \omega = v_t$
 \end{frame}
 
-\begin{frame}{Porównanie strategii -- cel na okręgu}
+\begin{frame}{Porównanie strategii - cel na okręgu}
 \small
 Parametry: $r = 3$ m, $\omega = 0.5$ rad/s, $v_p = 2.0$ m/s
 
@@ -212,7 +212,7 @@ Parametry: $r = 3$ m, $\omega = 0.5$ rad/s, $v_p = 2.0$ m/s
 \end{frame}
 
 
-\begin{frame}{Stosunek prędkości -- trajektorie (Direct Pursuit)}
+\begin{frame}{Stosunek prędkości - trajektorie (Direct Pursuit)}
 \small
 Parametry: $r = 3$ m, $\omega = 0.5$ rad/s, $v_t = 1.5$ m/s
 
@@ -221,7 +221,7 @@ Parametry: $r = 3$ m, $\omega = 0.5$ rad/s, $v_t = 1.5$ m/s
 \includegraphics[width=0.8\textwidth,height=0.75\textheight]{velocity_ratio_trajectories.pdf}
 \end{frame}
 
-\begin{frame}{Stosunek prędkości -- czasy przechwycenia}
+\begin{frame}{Stosunek prędkości - czasy przechwycenia}
 \centering
 \includegraphics[height=0.72\textheight,width=0.85\textwidth]{velocity_ratio_times.pdf}
 \end{frame}
@@ -245,7 +245,7 @@ $n$ agentów na okręgu o promieniu $R$, każdy ściga kolejnego: $\vec{p}_{n+1}
 \end{enumerate}
 \end{frame}
 
-\begin{frame}{Pościg cykliczny -- wyniki liczbowe}
+\begin{frame}{Pościg cykliczny - wyniki liczbowe}
 \centering
 \tablefontsize
 \begin{tabular}{@{}llll@{}}
@@ -266,7 +266,7 @@ $18$ & $5.759$ & $5.726 \pm 0.01$ & $0.58$ \\ \bottomrule
 \textbf{Asymptotycznie:} $\lim_{n \to \infty} T_{\text{conv}}(n) = R/v$
 \end{frame}
 
-\begin{frame}{Pościg cykliczny -- wizualizacja}
+\begin{frame}{Pościg cykliczny - wizualizacja}
 \small
 Parametry: $R = 5$ m, $v = 1.0$ m/s
 
@@ -279,7 +279,7 @@ Parametry: $R = 5$ m, $v = 1.0$ m/s
 \section{Rozszerzenia geometryczne}
 % ============================================
 
-\begin{frame}{Pościg w 3D -- trajektoria helisoidalna (Direct Pursuit)}
+\begin{frame}{Pościg w 3D - trajektoria helisoidalna (Direct Pursuit)}
 \textbf{Helisa:}
 \begin{equation*}
 \vec{t}(t) = [r\cos(\omega t), r\sin(\omega t), v_z \cdot t]^T
@@ -302,7 +302,7 @@ $2.0$ & $15.49$ & $38.45$ \\ \bottomrule
 \end{tabular}
 \end{frame}
 
-\begin{frame}{Pościg 3D -- helisa -- wizualizacja (Direct Pursuit)}
+\begin{frame}{Pościg 3D - helisa - wizualizacja (Direct Pursuit)}
 \begin{columns}[c]
 \begin{column}{0.7\textwidth}
 \centering
@@ -315,8 +315,8 @@ $2.0$ & $15.49$ & $38.45$ \\ \bottomrule
     \item[\textcolor{blue}{$\bullet$}] Start ścigającego
     \item[\textcolor{red}{$\blacksquare$}] Start celu
     \item[$\bigstar$] Punkty przechwycenia
-    \item[\textcolor{gray}{---}] Pełna trajektoria celu
-    \item[---] Trajektoria ścigającego
+    \item[\textcolor{gray}{--}] Pełna trajektoria celu
+    \item[--] Trajektoria ścigającego
 \end{itemize}
 
 \vspace{0.3cm}
@@ -351,10 +351,10 @@ $2:3:5$ & $18.49$ & $>30$ & $89.79$ \\ \bottomrule
 
 \vspace{0.2cm}
 \normalsize
-\textbf{Wniosek:} Dla $1{:}1{:}1$ cel oscyluje liniowo -- przechwycenie w punkcie zwrotnym ($v_t = 0$).
+\textbf{Wniosek:} Dla $1{:}1{:}1$ cel oscyluje liniowo - przechwycenie w punkcie zwrotnym ($v_t = 0$).
 \end{frame}
 
-\begin{frame}{Krzywe Lissajous -- wizualizacja (Direct Pursuit)}
+\begin{frame}{Krzywe Lissajous - wizualizacja (Direct Pursuit)}
 \small
 Parametry: start ścigającego $(5, 5, 5)$, start celu $(0, 0, 0)$, $A = (3, 3, 3)$ m, $v_p = 3.0$ m/s
 
@@ -367,8 +367,8 @@ Parametry: start ścigającego $(5, 5, 5)$, start celu $(0, 0, 0)$, $A = (3, 3, 
 \small
 Operujemy we \textbf{współrzędnych sferycznych} $(\theta, \phi)$, nie kartezjańskich:
 \begin{itemize}
-    \item $\theta \in [0, \pi]$ -- kąt polarny (od bieguna północnego)
-    \item $\phi \in [0, 2\pi)$ -- kąt azymutalny (długość geograficzna)
+    \item $\theta \in [0, \pi]$ - kąt polarny (od bieguna północnego)
+    \item $\phi \in [0, 2\pi)$ - kąt azymutalny (długość geograficzna)
 \end{itemize}
 
 \vspace{0.2cm}
@@ -398,7 +398,7 @@ $3.0$ & $0.60$ & $1.34$ \\ \bottomrule
 \tiny $R=5$, $\dot{\theta}_t = 0.1$, $\dot{\phi}_t = \pi/4$ rad/s. Start: $d_0 = 1.87$ rad.
 \end{frame}
 
-\begin{frame}{Pościg na sferze -- wizualizacja (Direct Pursuit)}
+\begin{frame}{Pościg na sferze - wizualizacja (Direct Pursuit)}
 \centering
 \includegraphics[width=0.85\textwidth]{sphere_pursuit_3d.pdf}
 \end{frame}
@@ -407,8 +407,8 @@ $3.0$ & $0.60$ & $1.34$ \\ \bottomrule
 \small
 Operujemy we \textbf{współrzędnych toroidalnych} $(u, v)$:
 \begin{itemize}
-    \item $u \in [0, 2\pi)$ -- kąt wokół głównej osi torusa
-    \item $v \in [0, 2\pi)$ -- kąt wokół rurki
+    \item $u \in [0, 2\pi)$ - kąt wokół głównej osi torusa
+    \item $v \in [0, 2\pi)$ - kąt wokół rurki
 \end{itemize}
 
 \vspace{0.2cm}
@@ -433,7 +433,7 @@ $3.0$ & $2.43$ & $5.50$ \\ \bottomrule
 \tiny $R=3$, $r=1.2$, $\omega_u = 0.4$, $\omega_v = 0.3$ rad/s.
 \end{frame}
 
-\begin{frame}{Pościg na torusie -- wizualizacja}
+\begin{frame}{Pościg na torusie - wizualizacja}
 \centering
 \includegraphics[width=0.85\textwidth]{torus_pursuit_3d.pdf}
 \end{frame}
@@ -456,7 +456,7 @@ $3.0$ & $2.43$ & $5.50$ \\ \bottomrule
 Im mniejszy $\Delta t$, tym trajektoria bliższa rozwiązaniu ciągłemu.
 \end{frame}
 
-\begin{frame}{Ciągłe vs. dyskretne -- wizualizacja}
+\begin{frame}{Ciągłe vs. dyskretne - wizualizacja}
 \small
 Parametry: $v_p = 6.0$ m/s, $r = 5$ m, $\omega = 0.5$ rad/s
 
@@ -473,9 +473,9 @@ Parametry: $v_p = 6.0$ m/s, $r = 5$ m, $\omega = 0.5$ rad/s
 \textbf{Technologie:}
 \begin{itemize}
     \item Python 3.12+
-    \item NumPy -- operacje wektorowe
-    \item SciPy -- \texttt{solve\_ivp} (Runge-Kutta z adaptacyjnym krokiem)
-    \item Matplotlib -- wizualizacje 2D/3D
+    \item NumPy - operacje wektorowe
+    \item SciPy - \texttt{solve\_ivp} (Runge-Kutta z adaptacyjnym krokiem)
+    \item Matplotlib - wizualizacje 2D/3D
 \end{itemize}
 
 \vspace{0.4cm}
@@ -483,16 +483,16 @@ Parametry: $v_p = 6.0$ m/s, $r = 5$ m, $\omega = 0.5$ rad/s
 \begin{columns}
 \begin{column}{0.5\textwidth}
 \begin{itemize}
-    \item \texttt{common/} -- klasy bazowe, symulacja
-    \item \texttt{d2/} -- strategie 2D
-    \item \texttt{d3/} -- strategie 3D
+    \item \texttt{common/} - klasy bazowe, symulacja
+    \item \texttt{d2/} - strategie 2D
+    \item \texttt{d3/} - strategie 3D
 \end{itemize}
 \end{column}
 \begin{column}{0.5\textwidth}
 \begin{itemize}
-    \item \texttt{dn/} -- n-wymiarowe
-    \item \texttt{sphere/} -- sfera $S^2$
-    \item \texttt{torus/} -- torus
+    \item \texttt{dn/} - n-wymiarowe
+    \item \texttt{sphere/} - sfera $S^2$
+    \item \texttt{torus/} - torus
 \end{itemize}
 \end{column}
 \end{columns}
@@ -506,9 +506,9 @@ Parametry: $v_p = 6.0$ m/s, $r = 5$ m, $\omega = 0.5$ rad/s
 \begin{frame}{Podsumowanie wyników}
 \textbf{Porównanie strategii:}
 \begin{itemize}
-    \item \textbf{Direct Pursuit} -- najkrótsze trajektorie, prosty w implementacji
-    \item \textbf{Proportional Navigation} ($N \in [3,4]$) -- najlepszy kompromis efektywność/stabilność
-    \item \textbf{Constant Bearing} -- spirale logarytmiczne, najmniej efektywny
+    \item \textbf{Direct Pursuit} - najkrótsze trajektorie, prosty w implementacji
+    \item \textbf{Proportional Navigation} ($N \in [3,4]$) - najlepszy kompromis efektywność/stabilność
+    \item \textbf{Constant Bearing} - spirale logarytmiczne, najmniej efektywny
 \end{itemize}
 
 \vspace{0.4cm}
