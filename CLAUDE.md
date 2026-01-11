@@ -16,6 +16,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### Documentation
 - **Build LaTeX docs**: `make tex` (compiles dokumentacja.tex to PDF)
+- **Build LaTeX prezentation**: `make prez` (compiles prezentacja.tex to PDF)
 
 ## Project Architecture
 
@@ -24,7 +25,7 @@ The project implements pursuit curve algorithms across multiple dimensions and g
 
 ```
 pursuit_curve/
-├── common/           # Shared types and simulation framework
+├── common/          # Shared types and simulation framework
 ├── d2/              # 2D pursuit algorithms
 ├── d3/              # 3D pursuit algorithms  
 ├── dn/              # N-dimensional pursuit algorithms

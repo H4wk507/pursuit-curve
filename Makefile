@@ -9,3 +9,6 @@ format:
 
 tex:
 	pdflatex dokumentacja.tex
+
+prez:
+	pdflatex prezentacja.tex

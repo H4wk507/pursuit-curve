@@ -30,9 +30,7 @@ class Simulation:
 
         pursuer = self.pursuer_positions[-1]
         # Note: pursuer strategy returns the displacement vector (v * dt)
-        movement = self.strategy.calculate_movement(
-            pursuer, new_target, self.pursuer_velocity, self.dt
-        )
+        movement = self.strategy.calculate_movement(pursuer, new_target, self.pursuer_velocity, self.dt)
         pursuer += movement
         self.pursuer_positions.append(pursuer)
 

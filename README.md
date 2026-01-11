@@ -36,7 +36,7 @@ The project is organized into several directories, each with a specific purpose.
 │   └── examples/         # Example scripts demonstrating different simulations
 ├── scripts/              # Scripts for generating figures and values for documentation
 ├── figures/              # Output directory for generated figures
-├── main.ipynb            # Jupyter Notebook for experimentation
+├── playground.ipynb      # Jupyter Notebook for experimentation
 ├── dokumentacja.tex      # LaTeX source for the project documentation
 ├── Makefile              # Makefile with commands for linting, formatting, etc.
 └── pyproject.toml        # Project configuration and dependencies
