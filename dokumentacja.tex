@@ -414,7 +414,21 @@ W podejściu dyskretnym, równania są iterowane z ustalonym krokiem czasowym $\
 
 Podejście dyskretne jest prostsze w implementacji, ale może wprowadzać większe błędy numeryczne przy niewłaściwym doborze $\Delta t$.
 
+\subsubsection{Porównanie wizualne}
+
+Na rysunku \ref{fig:discrete_vs_continuous} przedstawiono wizualne porównanie trajektorii uzyskanych z symulacji ciągłej (traktowanej jako rozwiązanie referencyjne) oraz symulacji dyskretnych z różnymi wartościami kroku czasowego $\Delta t$.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{discrete_vs_continuous.pdf}
+    \caption{Porównanie trajektorii pościgu bezpośredniego uzyskanych metodą ciągłą (linia przerywana) oraz metodami dyskretnymi dla różnych kroków czasowych $\Delta t$. Mniejszy krok czasowy prowadzi do trajektorii bliższej rozwiązaniu ciągłemu.}
+    \label{fig:discrete_vs_continuous}
+\end{figure}
+
+Jak widać, im mniejsza wartość kroku czasowego $\Delta t$, tym trajektoria uzyskana metodą dyskretną jest bliższa trajektorii z symulacji ciągłej. Dla $\Delta t = 0.05$ s, różnica jest już niewielka. Wybór kroku czasowego jest zatem kompromisem między dokładnością a kosztem obliczeniowym symulacji. W naszych eksperymentach, dla zapewnienia wysokiej dokładności, korzystaliśmy głównie z podejścia ciągłego.
+
 \section{Analiza numeryczna i warunki zbieżności}
+
 
 \subsection{Analiza parametryczna strategii pościgu}
 

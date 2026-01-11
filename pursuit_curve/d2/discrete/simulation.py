@@ -11,6 +11,7 @@ class Simulation:
         pursuer_velocity: Point2D,
         strategy: Strategy,
         target_strategy: TargetStrategy,
+        dt: float,
         max_iters: int = 1000,
     ):
         self.pursuer_positions = [pursuer_start]
@@ -18,19 +19,24 @@ class Simulation:
         self.pursuer_velocity = pursuer_velocity
         self.strategy = strategy
         self.target_strategy = target_strategy
+        self.dt = dt
         self.max_iters = max_iters
 
     def _step(self) -> tuple[Point2D, Point2D]:
         target = self.target_positions[-1]
-        target = self.target_strategy.calculate_movement(target)
-        self.target_positions.append(target)
+        # Note: target strategy returns the new absolute position
+        new_target = self.target_strategy.calculate_movement(target, self.dt)
+        self.target_positions.append(new_target)
 
         pursuer = self.pursuer_positions[-1]
-        movement = self.strategy.calculate_movement(pursuer, target, self.pursuer_velocity)
+        # Note: pursuer strategy returns the displacement vector (v * dt)
+        movement = self.strategy.calculate_movement(
+            pursuer, new_target, self.pursuer_velocity, self.dt
+        )
         pursuer += movement
         self.pursuer_positions.append(pursuer)
 
-        return pursuer, target
+        return pursuer, new_target
 
     def _should_stop(self, pursuer: Point2D, target: Point2D) -> bool:
         dx = target.x - pursuer.x
@@ -43,7 +49,7 @@ class Simulation:
         for i in range(self.max_iters):
             p, t = self._step()
             if self._should_stop(p, t):
-                print(f"Złapano cel po {i} krokach.")
+                print(f"Złapano cel po {i * self.dt:.2f}s ({i} krokach).")
                 caught = True
                 break
         if not caught:
