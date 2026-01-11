@@ -93,8 +93,8 @@ Problemy pościgu mają szerokie zastosowania praktyczne:
 W najprostszym przypadku pościgu bezpośredniego, ścigający w każdej chwili celuje bezpośrednio w aktualną pozycję celu. Stan układu w przestrzeni dwuwymiarowej $\mathbb{R}^2$ opisany jest wektorami:
 
 \begin{itemize}
-    \item $\vec{p}(t) = [p_x(t), p_y(t)]^T$ -- pozycja ścigającego
-    \item $\vec{t}(t) = [t_x(t), t_y(t)]^T$ -- pozycja celu
+    \item $\vec{p}(t) = [p_x(t), p_y(t)]^T$ - pozycja ścigającego
+    \item $\vec{t}(t) = [t_x(t), t_y(t)]^T$ - pozycja celu
 \end{itemize}
 
 Równania różniczkowe opisujące ruch ścigającego w strategii pościgu bezpośredniego mają postać:
@@ -106,9 +106,9 @@ Równania różniczkowe opisujące ruch ścigającego w strategii pościgu bezpo
 
 gdzie:
 \begin{itemize}
-    \item $v_p > 0$ -- prędkość skalarna ścigającego [m/s]
-    \item $\vec{t}(t) - \vec{p}(t)$ -- wektor skierowany od ścigającego do celu
-    \item $\|\vec{t}(t) - \vec{p}(t)\| = \sqrt{(t_x(t) - p_x(t))^2 + (t_y(t) - p_y(t))^2}$ -- odległość euklidesowa
+    \item $v_p > 0$ - prędkość skalarna ścigającego [m/s]
+    \item $\vec{t}(t) - \vec{p}(t)$ - wektor skierowany od ścigającego do celu
+    \item $\|\vec{t}(t) - \vec{p}(t)\| = \sqrt{(t_x(t) - p_x(t))^2 + (t_y(t) - p_y(t))^2}$ - odległość euklidesowa
 \end{itemize}
 
 Ruch celu opisany jest niezależnym równaniem:
@@ -129,9 +129,9 @@ W przestrzeni trójwymiarowej $\mathbb{R}^3$, równania pościgu bezpośredniego
 
 gdzie:
 \begin{itemize}
-    \item $\vec{p}(t) = [p_x(t), p_y(t), p_z(t)]^T$ -- pozycja ścigającego w 3D
-    \item $\vec{t}(t) = [t_x(t), t_y(t), t_z(t)]^T$ -- pozycja celu w 3D
-    \item $\|\vec{t}(t) - \vec{p}(t)\| = \sqrt{(t_x(t) - p_x(t))^2 + (t_y(t) - p_y(t))^2 + (t_z(t) - p_z(t))^2}$ -- odległość euklidesowa w 3D
+    \item $\vec{p}(t) = [p_x(t), p_y(t), p_z(t)]^T$ - pozycja ścigającego w 3D
+    \item $\vec{t}(t) = [t_x(t), t_y(t), t_z(t)]^T$ - pozycja celu w 3D
+    \item $\|\vec{t}(t) - \vec{p}(t)\| = \sqrt{(t_x(t) - p_x(t))^2 + (t_y(t) - p_y(t))^2 + (t_z(t) - p_z(t))^2}$ - odległość euklidesowa w 3D
 \end{itemize}
 
 \subsubsection{Przestrzeń n-wymiarowa}
@@ -192,8 +192,8 @@ Nowy kąt ruchu ścigającego:
 
 gdzie:
 \begin{itemize}
-    \item $N$ -- stała nawigacji (typowo $N \in [3, 5]$)
-    \item $\Delta\lambda$ -- zmiana kąta LOS w ostatnim kroku czasowym
+    \item $N$ - stała nawigacji (typowo $N \in [3, 5]$)
+    \item $\Delta\lambda$ - zmiana kąta LOS w ostatnim kroku czasowym
 \end{itemize}
 
 Równanie ruchu:
@@ -244,9 +244,9 @@ Trajektoria helisoidalna w przestrzeni 3D:
 
 gdzie:
 \begin{itemize}
-    \item $r$ -- promień helisy
-    \item $\omega$ -- prędkość kątowa
-    \item $v_z$ -- prędkość pionowa
+    \item $r$ - promień helisy
+    \item $\omega$ - prędkość kątowa
+    \item $v_z$ - prędkość pionowa
 \end{itemize}
 
 \subsubsection{Krzywe Lissajous (3D)}
@@ -258,8 +258,8 @@ Trajektoria opisana przez niezależne oscylacje harmoniczne w każdej współrz�
 
 gdzie:
 \begin{itemize}
-    \item $A_x, A_y, A_z$ -- amplitudy oscylacji
-    \item $\omega_x, \omega_y, \omega_z$ -- częstotliwości kątowe
+    \item $A_x, A_y, A_z$ - amplitudy oscylacji
+    \item $\omega_x, \omega_y, \omega_z$ - częstotliwości kątowe
 \end{itemize}
 
 \subsection{Pościg na rozmaitościach riemannowskich}
@@ -268,9 +268,9 @@ gdzie:
 
 Dla pościgu na powierzchni sfery o promieniu $R$, pozycje są parametryzowane współrzędnymi sferycznymi $(r, \theta, \phi)$:
 \begin{itemize}
-    \item $r$ -- promień (stały, $r = R$)
-    \item $\theta$ -- kąt polarny (colatitude), $\theta \in [0, \pi]$
-    \item $\phi$ -- kąt azymutalny (longitude), $\phi \in [0, 2\pi)$
+    \item $r$ - promień (stały, $r = R$)
+    \item $\theta$ - kąt polarny (colatitude), $\theta \in [0, \pi]$
+    \item $\phi$ - kąt azymutalny (longitude), $\phi \in [0, 2\pi)$
 \end{itemize}
 
 Konwersja do współrzędnych kartezjańskich:
@@ -294,11 +294,11 @@ d_{\text{angular}} = \arccos(\cos\theta_p \cos\theta_t + \sin\theta_p \sin\theta
 
 Torus jest parametryzowany dwoma kątami $(u, v)$:
 \begin{itemize}
-    \item $u \in [0, 2\pi)$ -- kąt wokół głównej osi
-    \item $v \in [0, 2\pi)$ -- kąt wokół przekroju poprzecznego
+    \item $u \in [0, 2\pi)$ - kąt wokół głównej osi
+    \item $v \in [0, 2\pi)$ - kąt wokół przekroju poprzecznego
 \end{itemize}
 
-Konwersja do współrzędnych kartezjańskich ($R$ -- promień główny, $r$ -- promień przekroju):
+Konwersja do współrzędnych kartezjańskich ($R$ - promień główny, $r$ - promień przekroju):
 \begin{equation}
 \begin{bmatrix} x \\ y \\ z \end{bmatrix} = \begin{bmatrix} (R + r\cos v) \cos u \\ (R + r\cos v) \sin u \\ r \sin v \end{bmatrix}
 \end{equation}
@@ -332,7 +332,7 @@ Pościg bezpośredni & Torus & \texttt{torus.continuous} \\ \bottomrule
 \end{tabular}
 \end{table}
 
-\subsection{Trajektorie celu -- implementacje}
+\subsection{Trajektorie celu - implementacje}
 
 Tabela \ref{tab:targets} przedstawia wszystkie zaimplementowane trajektorie celu.
 
@@ -360,25 +360,25 @@ Ruch na torusie & Torus & \texttt{torus.continuous} \\ \bottomrule
 
 Projekt zaimplementowany jest w języku Python 3.12+ z wykorzystaniem następujących bibliotek:
 \begin{itemize}
-    \item \texttt{numpy} -- operacje na tablicach i wektoryzacja obliczeń
-    \item \texttt{scipy} -- rozwiązywanie równań różniczkowych (\texttt{solve\_ivp})
-    \item \texttt{matplotlib} -- wizualizacja 2D i animacje
+    \item \texttt{numpy} - operacje na tablicach i wektoryzacja obliczeń
+    \item \texttt{scipy} - rozwiązywanie równań różniczkowych (\texttt{solve\_ivp})
+    \item \texttt{matplotlib} - wizualizacja 2D i animacje
 \end{itemize}
 
 \subsection{Struktura modułów}
 
 \begin{itemize}
-    \item \texttt{common/} -- klasy bazowe i wspólne narzędzia
+    \item \texttt{common/} - klasy bazowe i wspólne narzędzia
     \begin{itemize}
-        \item \texttt{types.py} -- definicje \texttt{Point2D}, \texttt{Point3D}, \texttt{PointND}, \texttt{Strategy}, \texttt{TargetStrategy}
-        \item \texttt{continuous\_simulation.py} -- symulacja ciągła z użyciem \texttt{solve\_ivp}
+        \item \texttt{types.py} - definicje \texttt{Point2D}, \texttt{Point3D}, \texttt{PointND}, \texttt{Strategy}, \texttt{TargetStrategy}
+        \item \texttt{continuous\_simulation.py} - symulacja ciągła z użyciem \texttt{solve\_ivp}
     \end{itemize}
-    \item \texttt{d2/} -- implementacje 2D (ciągłe i dyskretne)
-    \item \texttt{d3/} -- implementacje 3D (ciągłe)
-    \item \texttt{dn/} -- implementacje n-wymiarowe (ciągłe)
-    \item \texttt{sphere/} -- pościg na sferze $S^2$
-    \item \texttt{torus/} -- pościg na torusie
-    \item \texttt{examples/} -- przykładowe skrypty demonstracyjne
+    \item \texttt{d2/} - implementacje 2D (ciągłe i dyskretne)
+    \item \texttt{d3/} - implementacje 3D (ciągłe)
+    \item \texttt{dn/} - implementacje n-wymiarowe (ciągłe)
+    \item \texttt{sphere/} - pościg na sferze $S^2$
+    \item \texttt{torus/} - pościg na torusie
+    \item \texttt{examples/} - przykładowe skrypty demonstracyjne
 \end{itemize}
 
 \subsection{Podejście ciągłe vs. dyskretne}
@@ -472,7 +472,7 @@ v_p > v_t = r \cdot \omega
             \item Czas przechwycenia: $5.92$ s
             \item Stosunek do okresu orbity: $0.47 \cdot T_{\text{orbit}}$
         \end{itemize}
-    \item Dla $\omega = 1.0$ rad/s ($v_t = 3.0$ m/s, $v_p = 2.0$ m/s): Brak przechwycenia -- cel szybszy od ścigającego
+    \item Dla $\omega = 1.0$ rad/s ($v_t = 3.0$ m/s, $v_p = 2.0$ m/s): Brak przechwycenia - cel szybszy od ścigającego
     \item Krytyczna prędkość kątowa $\omega_{\text{crit}} = v_p / r = 0.667$ rad/s
 \end{itemize}
 
@@ -489,12 +489,12 @@ Analizowano względną efektywność trzech strategii pościgu dla znormalizowan
 
 \begin{table}[H]
 \centering
-\caption{Porównanie strategii pościgu -- względne wydłużenie trajektorii}
+\caption{Porównanie strategii pościgu - względne wydłużenie trajektorii}
 \label{tab:strategy_comparison}
 \begin{tabular}{@{}llll@{}}
 \toprule
 \textbf{Strategia} & \textbf{Parametr} & \textbf{Wydłużenie trajektorii} & \textbf{Stabilność} \\ \midrule
-Direct Pursuit & -- & $1.0$ (baseline) & Stabilna \\
+Direct Pursuit & - & $1.0$ (baseline) & Stabilna \\
 \multirow{3}{*}{Constant Bearing} & $\beta = 15°$ & $1.098 \pm 0.05$ & Stabilna \\
 & $\beta = 30°$ & $1.438 \pm 0.05$ & Stabilna \\
 & $\beta = 45°$ & $2.185 \pm 0.05$ & Średnia \\
@@ -511,7 +511,7 @@ Direct Pursuit & -- & $1.0$ (baseline) & Stabilna \\
 \label{fig:strategy_linear}
 \end{figure}
 
-\subsection{Pościg 2D -- Proportional Navigation}
+\subsection{Pościg 2D - Proportional Navigation}
 
 Strategia nawigacji proporcjonalnej, szeroko stosowana w naprowadzaniu pocisków, charakteryzuje się tym, że prędkość kątowa ścigającego jest proporcjonalna do prędkości kątowej linii wzroku (Line-Of-Sight).
 
@@ -550,12 +550,19 @@ Obserwacje:
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.95\textwidth]{velocity_ratio_analysis.pdf}
-\caption{Analiza wpływu stosunku prędkości $\rho = v_p/v_t$ na trajektorię pościgu (lewo) oraz znormalizowany czas przechwycenia (prawo).}
-\label{fig:velocity_ratio}
+\includegraphics[width=0.85\textwidth]{velocity_ratio_trajectories.pdf}
+\caption{Trajektorie pościgu dla różnych stosunków prędkości $\rho = v_p/v_t$.}
+\label{fig:velocity_ratio_trajectories}
 \end{figure}
 
-\subsection{Pościg cykliczny -- analiza teoretyczna vs. numeryczna}
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{velocity_ratio_times.pdf}
+\caption{Czasy przechwycenia w funkcji stosunku prędkości $\rho = v_p/v_t$.}
+\label{fig:velocity_ratio_times}
+\end{figure}
+
+\subsection{Pościg cykliczny - analiza teoretyczna vs. numeryczna}
 
 Dla $n$ agentów rozmieszczonych na regularnym wielokącie o promieniu $R$, teoretyczny czas zbieżności wynosi:
 \begin{equation}
@@ -563,7 +570,7 @@ T_{\text{conv}}^{\text{theory}}(n) = \frac{R}{v} \cdot \frac{1}{\sin(\pi/n)}
 \label{eq:theoretical_convergence}
 \end{equation}
 
-\textbf{Wyprowadzenie wzoru:} Jest to klasyczny wynik znany jako ,,problem $n$ myszy'' (ang. \textit{n-bug problem}). Rozważmy $n$ agentów ustawionych na wierzchołkach foremnego $n$-kąta wpisanego w okrąg o promieniu $R$. Każdy agent goni następnego z prędkością $v$.
+\textbf{Wyprowadzenie wzoru:} Rozważmy $n$ agentów ustawionych na wierzchołkach foremnego $n$-kąta wpisanego w okrąg o promieniu $R$. Każdy agent goni następnego z prędkością $v$.
 
 \begin{enumerate}
     \item Kąt wewnętrzny foremnego $n$-kąta wynosi $\alpha = \frac{(n-2)\pi}{n}$.
@@ -580,16 +587,15 @@ T_{\text{conv}}^{\text{theory}}(n) = \frac{R}{v} \cdot \frac{1}{\sin(\pi/n)}
 \begin{tabular}{@{}llll@{}}
 \toprule
 \textbf{Liczba agentów $n$} & \textbf{$T_{\text{theory}}$ [R/v]} & \textbf{$T_{\text{numerical}}$ [R/v]} & \textbf{Błąd względny [\%]} \\ \midrule
-$3$ & $1.155$ & $1.088 \pm 0.01$ & $5.77$ \\
-$4$ & $1.414$ & $1.314 \pm 0.01$ & $7.07$ \\
-$6$ & $2.000$ & $1.800 \pm 0.01$ & $10.00$ \\
-$12$ & $3.864$ & $3.117 \pm 0.01$ & $19.32$ \\
-$18$ & $5.759$ & $4.101 \pm 0.01$ & $28.79$ \\
-$n \to \infty$ & $1.000$ & $\approx 1.000$ & $< 0.1$ \\ \bottomrule
+$3$ & $1.155$ & $1.153 \pm 0.01$ & $0.12$ \\
+$4$ & $1.414$ & $1.412 \pm 0.01$ & $0.14$ \\
+$6$ & $2.000$ & $1.996 \pm 0.01$ & $0.20$ \\
+$12$ & $3.864$ & $3.849 \pm 0.01$ & $0.39$ \\
+$18$ & $5.759$ & $5.726 \pm 0.01$ & $0.58$ \\ \bottomrule
 \end{tabular}
 \end{table}
 
-Błąd numeryczny wynika z warunku stopu symulacji (odległość między agentami $< 0.5$ m), który zatrzymuje symulację przed osiągnięciem pełnej zbieżności. Dla mniejszej liczby agentów błąd jest akceptowalny ($< 10\%$).
+Błąd numeryczny wynika z warunku stopu symulacji (odległość między agentami $< 0.01$ m), który zatrzymuje symulację przed osiągnięciem pełnej zbieżności.
 
 \begin{figure}[H]
 \centering
@@ -606,7 +612,7 @@ Dla dużej liczby agentów ($n \gg 1$), czas zbieżności asymptotycznie dąży 
 
 co odpowiada czasowi potrzebnemu do przejścia odległości równej promieniu ze stałą prędkością.
 
-\subsection{Pościg 3D -- Helix Target}
+\subsection{Pościg 3D - Helix Target}
 
 Analizowano pościg bezpośredni dla celu poruszającego się po trajektorii helisoidalnej. Helisa parametryzowana jest równaniami:
 \begin{equation}
@@ -627,17 +633,17 @@ Parametry eksperymentu:
 \begin{tabular}{@{}lll@{}}
 \toprule
 \textbf{Prędkość pionowa $v_z$ [m/s]} & \textbf{Czas przechwycenia [s]} & \textbf{Długość trajektorii [m]} \\ \midrule
-$0.0$ (okrąg) & $2.92$ & $7.29$ \\
-$0.5$ & $2.84$ & $7.10$ \\
-$1.0$ & $3.09$ & $7.73$ \\
-$1.5$ & $4.12$ & $10.30$ \\
-$2.0$ & $10.93$ & $27.32$ \\ \bottomrule
+$0.0$ (okrąg) & $3.29$ & $8.23$ \\
+$0.5$ & $3.25$ & $8.14$ \\
+$1.0$ & $3.71$ & $9.21$ \\
+$1.5$ & $7.39$ & $17.07$ \\
+$2.0$ & $15.49$ & $38.45$ \\ \bottomrule
 \end{tabular}
 \end{table}
 
 Obserwacje:
 \begin{itemize}
-    \item Zwiększenie $v_z$ wydłuża czas przechwycenia -- cel "ucieka" w trzecim wymiarze
+    \item Zwiększenie $v_z$ wydłuża czas przechwycenia - cel "ucieka" w trzecim wymiarze
     \item Dla $v_z = 0$ problem redukuje się do pościgu 2D po okręgu
     \item Trajektoria ścigającego tworzy spiralę 3D
 \end{itemize}
@@ -649,7 +655,7 @@ Obserwacje:
 \label{fig:helix_pursuit}
 \end{figure}
 
-\subsection{Pościg 3D -- Lissajous Target}
+\subsection{Pościg 3D - Lissajous Target}
 
 Krzywe Lissajous to trajektorie złożone z niezależnych oscylacji harmonicznych w każdym wymiarze:
 \begin{equation}
@@ -663,32 +669,34 @@ Parametry eksperymentu:
     \item Prędkość ścigającego: $3.0$ m/s
 \end{itemize}
 
+\textbf{Warunek wystarczający przechwycenia:}
+\begin{equation}
+v_p > v_{t,\max} = \sqrt{(A_x \omega_x)^2 + (A_y \omega_y)^2 + (A_z \omega_z)^2}
+\end{equation}
+
 \begin{table}[H]
 \centering
 \caption{Wpływ stosunku częstotliwości na złożoność pościgu}
 \label{tab:lissajous_pursuit_analysis}
 \begin{tabular}{@{}llll@{}}
 \toprule
-\textbf{Stosunek $\omega_x : \omega_y : \omega_z$} & \textbf{Czas [s]} & \textbf{Długość [m]} & \textbf{Typ krzywej} \\ \midrule
-$1:1:1$ & $1.14$ & $3.43$ & Sfera oscylacyjna \\
-$1:2:1$ & $>30$ & $89.97$ & Elipsoida Lissajous \\
-$2:3:1$ & $>30$ & $89.93$ & Krzywa złożona \\
-$1:1:3$ & $2.10$ & $6.29$ & Oscylacja pionowa \\
-$2:3:5$ & $>30$ & $89.79$ & Quasi-periodyczna \\ \bottomrule
+\textbf{Stosunek $\omega_x : \omega_y : \omega_z$} & \textbf{$v_{t,\max}$} & \textbf{Czas [s]} & \textbf{Długość [m]} \\ \midrule
+$1:1:1$ & $5.20$ & $1.22$ & $3.66$ \\
+$1:2:1$ & $7.35$ & $>30$ & $89.97$ \\
+$2:3:5$ & $18.49$ & $>30$ & $89.79$ \\ \bottomrule
 \end{tabular}
 \end{table}
 
 Obserwacje:
 \begin{itemize}
-    \item Stosunki częstotliwości wymierne prowadzą do trajektorii periodycznych
-    \item Niewymierne stosunki generują trajektorie quasi-periodyczne
+    \item Dla $1{:}1{:}1$ cel oscyluje liniowo - przechwycenie w punkcie zwrotnym ($v_t = 0$)
     \item Większa złożoność trajektorii celu wydłuża czas przechwycenia
 \end{itemize}
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.95\textwidth]{lissajous_pursuit_3d.pdf}
-\caption{Pościg 3D dla celu na krzywych Lissajous o różnych stosunkach częstotliwości $\omega_x : \omega_y : \omega_z$. Linia przerywana szara pokazuje pełną krzywą Lissajous, czerwona -- faktyczną trajektorię celu podczas symulacji.}
+\caption{Pościg 3D dla celu na krzywych Lissajous o różnych stosunkach częstotliwości $\omega_x : \omega_y : \omega_z$. Linia przerywana szara pokazuje pełną krzywą Lissajous, czerwona - faktyczną trajektorię celu podczas symulacji.}
 \label{fig:lissajous_pursuit}
 \end{figure}
 
@@ -698,7 +706,7 @@ Zbadano zachowanie pościgu bezpośredniego w przestrzeniach $\mathbb{R}^n$ dla 
 
 \subsubsection{Niezależność od wymiaru dla ruchu jednoosiowego}
 
-Kluczowa obserwacja: gdy cel porusza się wzdłuż jednej osi, czas przechwycenia jest \textbf{niezależny od wymiaru przestrzeni}. Wynika to z faktu, że pościg bezpośredni zawsze kieruje ścigającego wprost na cel -- dodatkowe wymiary nie wpływają na dynamikę, gdy ruch odbywa się w podprzestrzeni jednowymiarowej.
+Kluczowa obserwacja: gdy cel porusza się wzdłuż jednej osi, czas przechwycenia jest \textbf{niezależny od wymiaru przestrzeni}. Wynika to z faktu, że pościg bezpośredni zawsze kieruje ścigającego wprost na cel - dodatkowe wymiary nie wpływają na dynamikę, gdy ruch odbywa się w podprzestrzeni jednowymiarowej.
 
 Dla konfiguracji testowej:
 \begin{itemize}
@@ -723,101 +731,58 @@ Implementacja n-wymiarowa ($n \leq 20$) została zweryfikowana numerycznie. Wyni
     \item Czas przechwycenia zależy wyłącznie od geometrii problemu (odległość, prędkości), nie od wymiaru przestrzeni otaczającej
 \end{itemize}
 
-\subsection{Pościg na rozmaitościach riemannowskich}
+\subsection{Pościg na sferze $S^2$}
 
-\subsubsection{Porównanie metryk: sferyczna vs. euklidesowa}
-
-Na sferze $S^2$, porównano efektywność pościgu z wykorzystaniem dwóch różnych metryk:
+Analizowano pościg bezpośredni na sferze o promieniu $R = 5$ m. Operujemy we współrzędnych sferycznych $(\theta, \phi)$, nie kartezjańskich.
 
 \begin{table}[H]
 \centering
-\caption{Efektywność różnych metryk na sferze}
-\label{tab:sphere_metrics_comparison}
-\begin{tabular}{@{}llll@{}}
+\caption{Wyniki pościgu na sferze $S^2$}
+\label{tab:sphere_pursuit_results}
+\begin{tabular}{@{}ccc@{}}
 \toprule
-\textbf{Metryka} & \textbf{Wydłużenie trajektorii} & \textbf{Błąd geodezyjny [\%]} & \textbf{Stabilność} \\ \midrule
-Geodezyjną (sferyczna) & $1.00$ (baseline) & $0.0$ & Wysoka \\
-Euklidesowa (projekcja) & $1.12 \pm 0.03$ & $8.5 \pm 2.1$ & Średnia \\
-Stereograficzna & $1.05 \pm 0.02$ & $3.2 \pm 1.0$ & Wysoka \\ \bottomrule
+\textbf{Prędkość $v_p/v_t$} & \textbf{Czas pościgu [s]} & \textbf{Długość trajektorii [rad]} \\ \midrule
+$1.5$ & $1.04$ & $1.19$ \\
+$2.0$ & $0.83$ & $1.26$ \\
+$3.0$ & $0.60$ & $1.34$ \\ \bottomrule
 \end{tabular}
 \end{table}
 
-\subsubsection{Wpływ krzywizny na optymalne trajektorie}
-
-Dla sfery o promieniu $R$, względne wydłużenie trajektorii wynikające z użycia metryki euklidesowej skaluje się jak:
-\begin{equation}
-\delta_{\text{lengthening}} \approx \frac{d_{\text{angular}}^2}{12 \cdot R^2}
-\label{eq:spherical_error_scaling}
-\end{equation}
-
-gdzie $d_{\text{angular}}$ jest odległością kątową między pozycjami początkowymi. Ta zależność jest ważna dla $d_{\text{angular}} < \pi/2$.
+Parametry eksperymentu: $R=5$ m, $\dot{\theta}_t = 0.1$ rad/s, $\dot{\phi}_t = \pi/4$ rad/s. Początkowa odległość: $d_0 = 1.87$ rad.
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.95\textwidth]{sphere_pursuit_3d.pdf}
-\caption{Pościg na sferze $S^2$ dla dwóch scenariuszy: (lewo) cel poruszający się wzdłuż równika, (prawo) cel poruszający się spiralnie. Trajektorie są geodezyjne -- ścigający podąża najkrótszą drogą po powierzchni sfery.}
+\caption{Pościg na sferze $S^2$. Trajektoria ścigającego podąża najkrótszą drogą po powierzchni sfery.}
 \label{fig:sphere_pursuit}
 \end{figure}
 
 \subsection{Pościg na torusie}
 
-Analizowano pościg bezpośredni na torusie o promieniu głównym $R$ i promieniu rurki $r$. Metryka riemannowska na torusie:
-\begin{equation}
-ds^2 = (R + r\cos v)^2 du^2 + r^2 dv^2
-\end{equation}
-
-\subsubsection{Wpływ stosunku promieni $R/r$ na trajektorię}
-
-Parametry eksperymentu:
-\begin{itemize}
-    \item Prędkość ścigającego: $1.0$ m/s
-    \item Prędkość kątowa celu: $\omega_u = 0.3$ rad/s, $\omega_v = 0.5$ rad/s
-    \item Promień główny: $R = 3.0$ m
-\end{itemize}
+Analizowano pościg bezpośredni na torusie o promieniu głównym $R = 3$ m i promieniu rurki $r = 1.2$ m. Operujemy we współrzędnych toroidalnych $(u, v)$.
 
 \begin{table}[H]
 \centering
-\caption{Wpływ stosunku promieni na czas przechwycenia}
-\label{tab:torus_ratio_analysis}
-\begin{tabular}{@{}llll@{}}
+\caption{Wyniki pościgu na torusie}
+\label{tab:torus_pursuit_results}
+\begin{tabular}{@{}ccc@{}}
 \toprule
-\textbf{Stosunek $R/r$} & \textbf{$r$ [m]} & \textbf{Czas [s]} & \textbf{Długość trajektorii [m]} \\ \midrule
-$4.0$ & $0.75$ & $30.23$ & $30.24$ \\
-$2.0$ & $1.5$ & $>50$ & $49.99$ \\
-$1.0$ & $3.0$ & $>50$ & $50.00$ \\
-$0.67$ & $4.5$ & $>50$ & $49.98$ \\
-$0.5$ & $6.0$ & $>50$ & $49.95$ \\ \bottomrule
+\textbf{Prędkość $v_p$} & \textbf{Stosunek $v_p/v_t$} & \textbf{Czas [s]} \\ \midrule
+$1.5$ & $1.21$ & $4.64$ \\
+$2.0$ & $1.62$ & $11.03$ \\
+$2.5$ & $2.02$ & $7.16$ \\
+$3.0$ & $2.43$ & $5.50$ \\ \bottomrule
 \end{tabular}
 \end{table}
 
-Obserwacje:
-\begin{itemize}
-    \item Wysoki stosunek $R/r$ (cienka rurka) ułatwia przechwycenie -- mniejsza przestrzeń do ucieczki
-    \item Niski stosunek $R/r$ (gruba rurka) utrudnia przechwycenie -- cel ma więcej opcji manewrowania
-\end{itemize}
+Parametry eksperymentu: $R=3$ m, $r=1.2$ m, $\omega_u = 0.4$ rad/s, $\omega_v = 0.3$ rad/s.
 
-\subsubsection{Efekt topologii toroidalnej (periodyczność)}
-
-Zbadano wpływ periodycznych warunków brzegowych na pościg:
-
-\begin{table}[H]
-\centering
-\caption{Przechwycenie przy ruchu celu wzdłuż jednej osi}
-\label{tab:torus_periodicity}
-\begin{tabular}{@{}lll@{}}
-\toprule
-\textbf{Ruch celu} & \textbf{Czas przechwycenia [s]} & \textbf{Charakterystyka} \\ \midrule
-Okrąg główny ($\omega_u = 0.5$, $\omega_v = 0$) & $4.32$ & Prostsza geometria \\
-Rurka ($\omega_u = 0$, $\omega_v = 0.5$) & $18.45$ & Silniejsza krzywizna \\ \bottomrule
-\end{tabular}
-\end{table}
-
-Periodyczność torusa powoduje, że ścigający może "skrócić" drogę przechodząc przez brzeg przestrzeni parametrycznej. Ruch wokół rurki jest trudniejszy do przechwycenia ze względu na silniejszą krzywiznę lokalną.
+Obserwacja: Na torusie występuje nieliniowa zależność czasu przechwycenia od prędkości ścigającego.
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.95\textwidth]{torus_pursuit_3d.pdf}
-\caption{Pościg na torusie dla dwóch scenariuszy: (lewo) cel poruszający się wzdłuż okręgu głównego, (prawo) cel poruszający się spiralnie. Trajektoria ścigającego (linia ciągła niebieska) podąża za celem (linia przerywana czerwona) z uwzględnieniem metryki riemannowskiej torusa.}
+\caption{Pościg na torusie. Trajektoria ścigającego podąża za celem z uwzględnieniem metryki riemannowskiej torusa.}
 \label{fig:torus_pursuit}
 \end{figure}
 
@@ -827,30 +792,24 @@ Periodyczność torusa powoduje, że ścigający może "skrócić" drogę przech
 
 Analiza numeryczna wykazała, że:
 \begin{itemize}
-    \item \textbf{Direct Pursuit} zapewnia najkrótsze trajektorie, ale może być niestabilny dla szybko manewrujących celów
-    \item \textbf{Proportional Navigation} z $N \in [3,4]$ oferuje najlepszy kompromis między efektywnością a stabilnością
-    \item \textbf{Constant Bearing} tworzy estetycznie atrakcyjne spirale, ale jest najmniej efektywny pod względem długości trajektorii
+    \item \textbf{Direct Pursuit} - najkrótsze trajektorie, prosty w implementacji
+    \item \textbf{Proportional Navigation} ($N \in [3,4]$) - najlepszy kompromis efektywność/stabilność
+    \item \textbf{Constant Bearing} - spirale logarytmiczne, najmniej efektywny
 \end{itemize}
 
 \subsection{Wpływ wymiaru przestrzeni}
 
-Weryfikacja implementacji n-wymiarowej ($n \leq 20$) wykazała, że dla ruchu celu wzdłuż jednej osi, czas przechwycenia jest \textbf{niezależny od wymiaru przestrzeni}. Algorytm pościgu bezpośredniego poprawnie generalizuje się na przestrzenie $\mathbb{R}^n$ bez utraty efektywności.
-
-\subsection{Znaczenie geometrii riemannowskiej}
-
-Eksperymenty na sferze i torusie potwierdziły, że:
 \begin{itemize}
-    \item Wykorzystanie właściwej metryki riemannowskiej daje trajektorie o 5.2--12.8\% krótsze niż projekcje euklidesowe
-    \item Błąd wynikający z aproksymacji euklidesowej skaluje się kwadratowo z odległością kątową
+    \item Czas przechwycenia \textbf{niezależny od wymiaru} (dla ruchu jednoosiowego)
+    \item Zweryfikowano numerycznie dla $n \leq 20$
 \end{itemize}
 
-\subsection{Zastosowania praktyczne}
+\subsection{Geometria riemannowska (sfera $S^2$, torus)}
 
-Wyniki mają bezpośrednie zastosowania w:
 \begin{itemize}
-    \item Systemach naprowadzania pocisków (Proportional Navigation)
-    \item Nawigacji robotów mobilnych (Direct Pursuit dla prostych środowisk)
-    \item Algorytmach AI w grach (Constant Bearing dla realistycznego zachowania)
+    \item Pościg we współrzędnych krzywoliniowych $(\theta, \phi)$ i $(u, v)$
+    \item Metryka definiuje odległość geodezyjną i kierunek pościgu
+    \item Na torusie: nieliniowa zależność czasu od prędkości ścigającego
 \end{itemize}
 
 \section*{Literatura}
