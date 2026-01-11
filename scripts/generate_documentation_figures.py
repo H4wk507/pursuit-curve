@@ -81,6 +81,7 @@ def generate_strategy_comparison_linear_target():
     # Parametry
     initial_state = [8.0, 2.0, 0.0, 0.0]
     pursuer_speed = 2.0
+    capture_distance = 0.1  # Zmniejszona tolerancja przechwycenia
     target_strategy = ContinuousTargetLinearStrategy(velocity=Point2D(0.8, 0.6))
 
     strategies = [
@@ -89,6 +90,7 @@ def generate_strategy_comparison_linear_target():
             ContinuousDirectPursuit(
                 pursuer_velocity=Point2D(pursuer_speed, pursuer_speed),
                 target_strategy=target_strategy,
+                capture_distance=capture_distance,
             ),
             COLORS["direct"],
         ),
@@ -98,6 +100,7 @@ def generate_strategy_comparison_linear_target():
                 pursuer_velocity=Point2D(pursuer_speed, pursuer_speed),
                 target_strategy=target_strategy,
                 bearing_angle_deg=15,
+                capture_distance=capture_distance,
             ),
             COLORS["bearing_15"],
         ),
@@ -107,6 +110,7 @@ def generate_strategy_comparison_linear_target():
                 pursuer_velocity=Point2D(pursuer_speed, pursuer_speed),
                 target_strategy=target_strategy,
                 bearing_angle_deg=30,
+                capture_distance=capture_distance,
             ),
             COLORS["bearing_30"],
         ),
@@ -116,6 +120,7 @@ def generate_strategy_comparison_linear_target():
                 pursuer_velocity=Point2D(pursuer_speed, pursuer_speed),
                 target_strategy=target_strategy,
                 N=3,
+                capture_distance=capture_distance,
             ),
             COLORS["pn_3"],
         ),
@@ -129,9 +134,21 @@ def generate_strategy_comparison_linear_target():
         ax.scatter(
             [initial_state[0]], [initial_state[1]], color=color, s=80, zorder=5, edgecolors="white", linewidth=1.5
         )
+        # Punkt przechwycenia (końcowy punkt trajektorii)
+        intercept_x, intercept_y = solution.y[0][-1], solution.y[1][-1]
+        ax.scatter(
+            [intercept_x],
+            [intercept_y],
+            color=color,
+            s=100,
+            marker="X",
+            zorder=6,
+            edgecolors="white",
+            linewidth=1.0,
+        )
 
     # Trajektoria celu
-    t_end = 4.0
+    t_end = 6.0
     t_vals = np.linspace(0, t_end, 100)
     target_x = 0.0 + 0.8 * t_vals
     target_y = 0.0 + 0.6 * t_vals
@@ -163,6 +180,7 @@ def generate_strategy_comparison_circular_target():
     r = 3.0
     omega = 0.5
     pursuer_speed = 2.0
+    capture_distance = 0.1  # Zmniejszona tolerancja przechwycenia
     initial_state = [8.0, 0.0, r, 0.0]  # pursuer w (8,0), cel w (r, 0)
     target_strategy = ContinuousTargetCircleStrategy(angular_velocity=omega, r=r)
 
@@ -172,6 +190,7 @@ def generate_strategy_comparison_circular_target():
             ContinuousDirectPursuit(
                 pursuer_velocity=Point2D(pursuer_speed, pursuer_speed),
                 target_strategy=target_strategy,
+                capture_distance=capture_distance,
             ),
             COLORS["direct"],
         ),
@@ -181,6 +200,7 @@ def generate_strategy_comparison_circular_target():
                 pursuer_velocity=Point2D(pursuer_speed, pursuer_speed),
                 target_strategy=target_strategy,
                 bearing_angle_deg=15,
+                capture_distance=capture_distance,
             ),
             COLORS["bearing_15"],
         ),
@@ -190,6 +210,7 @@ def generate_strategy_comparison_circular_target():
                 pursuer_velocity=Point2D(pursuer_speed, pursuer_speed),
                 target_strategy=target_strategy,
                 N=3,
+                capture_distance=capture_distance,
             ),
             COLORS["pn_3"],
         ),
@@ -207,6 +228,18 @@ def generate_strategy_comparison_circular_target():
         ax.plot(solution.y[0], solution.y[1], color=color, label=name, linewidth=2)
         ax.scatter(
             [initial_state[0]], [initial_state[1]], color=color, s=80, zorder=5, edgecolors="white", linewidth=1.5
+        )
+        # Punkt przechwycenia (końcowy punkt trajektorii)
+        intercept_x, intercept_y = solution.y[0][-1], solution.y[1][-1]
+        ax.scatter(
+            [intercept_x],
+            [intercept_y],
+            color=color,
+            s=100,
+            marker="X",
+            zorder=6,
+            edgecolors="white",
+            linewidth=1.0,
         )
 
         # Trajektoria celu dla tej symulacji
@@ -262,7 +295,7 @@ def generate_cyclic_pursuit():
         for angle in angles:
             initial_positions.extend([R * np.cos(angle), R * np.sin(angle)])
 
-        strategy = ContinuousCyclicPursuit(velocity=Point2D(v, v), n=n)
+        strategy = ContinuousCyclicPursuit(velocity=Point2D(v, v), n=n, capture_distance=0.1)
         T_theory = R / (v * np.sin(np.pi / n))
 
         solution = run_continuous_simulation(
@@ -304,10 +337,11 @@ def generate_cyclic_pursuit():
 def generate_helix_pursuit_3d():
     """
     Generuje wykres 3D pościgu dla celu na helisie.
+    Ulepszona wizualizacja z punktami przechwycenia i lepszą widocznością 3D.
     """
     print("Generowanie wykresu: pościg 3D (helisa)...")
 
-    fig = plt.figure(figsize=(12, 10))
+    fig = plt.figure(figsize=(14, 11))
     ax = fig.add_subplot(111, projection="3d")
 
     # Parametry
@@ -321,54 +355,118 @@ def generate_helix_pursuit_3d():
 
     vertical_velocities = [0.0, 0.5, 1.0, 1.5]
     colors_vz = ["#2563eb", "#16a34a", "#ea580c", "#dc2626"]
+    
+    # Czas dla pełnej trajektorii celu (dłuższy niż symulacja)
+    t_full = np.linspace(0, 15, 500)
+    
+    # Najpierw rysujemy pełne trajektorie celu na szaro
+    for vz in vertical_velocities:
+        target_x_full = r * np.cos(omega * t_full)
+        target_y_full = r * np.sin(omega * t_full)
+        target_z_full = vz * t_full
+        label_target = "Trajektoria celu (pełna)" if vz == vertical_velocities[0] else None
+        ax.plot(target_x_full, target_y_full, target_z_full, 
+                color='#888888', linewidth=2.0, alpha=0.7, zorder=1, label=label_target)
+    
+    # Przechowuj punkty przechwycenia
+    capture_points = []
 
     for vz, color in zip(vertical_velocities, colors_vz):
         target_strategy = ContinuousTargetHelixStrategy(r=r, angular_velocity=omega, vertical_velocity=vz)
         strategy = ContinuousDirectPursuit3D(
             pursuer_velocity=Point3D(pursuer_speed, pursuer_speed, pursuer_speed),
             target_strategy=target_strategy,
+            capture_distance=0.01
         )
 
         solution = run_continuous_simulation(initial_state.copy(), strategy, t_span=(0, 15), max_step=0.05)
 
-        # Trajektoria ścigającego
-        ax.plot(solution.y[0], solution.y[1], solution.y[2], color=color, linewidth=2, label=f"Ścigający (vz={vz} m/s)")
+        # Trajektoria ścigającego - grubsza linia z efektem głębi
+        ax.plot(solution.y[0], solution.y[1], solution.y[2], color=color, linewidth=2.5, 
+                label=f"Ścigający ($v_z$={vz} m/s)", zorder=10)
+        
+        # Punkt przechwycenia (końcowy punkt symulacji)
+        capture_x = solution.y[0][-1]
+        capture_y = solution.y[1][-1]
+        capture_z = solution.y[2][-1]
+        capture_points.append((capture_x, capture_y, capture_z, color, vz))
 
-        # Trajektoria celu
-        target_x = r * np.cos(omega * solution.t)
-        target_y = r * np.sin(omega * solution.t)
-        target_z = vz * solution.t
-        ax.plot(target_x, target_y, target_z, "--", color=color, linewidth=1, alpha=0.5)
-
-    # Punkty startowe
+    # Punkty startowe - większe i bardziej wyraźne
     ax.scatter(
         [pursuer_start[0]],
         [pursuer_start[1]],
         [pursuer_start[2]],
-        color="blue",
-        s=100,
+        color="#1e40af",
+        s=180,
         marker="o",
         label="Start ścigającego",
         edgecolors="white",
-        linewidth=1.5,
+        linewidth=2,
+        zorder=20,
+        depthshade=False,
     )
     ax.scatter(
         [target_start[0]],
         [target_start[1]],
         [target_start[2]],
-        color="red",
-        s=100,
+        color="#b91c1c",
+        s=180,
         marker="s",
         label="Start celu",
         edgecolors="white",
-        linewidth=1.5,
+        linewidth=2,
+        zorder=20,
+        depthshade=False,
     )
+    
+    # Punkty przechwycenia - gwiazdki z konturem
+    for i, (cx, cy, cz, color, vz) in enumerate(capture_points):
+        label = "Punkt przechwycenia" if i == 0 else None
+        ax.scatter(
+            [cx], [cy], [cz],
+            color=color,
+            s=300,
+            marker="*",
+            edgecolors="black",
+            linewidth=1.5,
+            zorder=25,
+            depthshade=False,
+            label=label,
+        )
+    
+    # Siatka projekcji na płaszczyznę XY dla lepszej orientacji 3D
+    z_min = ax.get_zlim()[0]
+    for vz, color in zip(vertical_velocities, colors_vz):
+        target_strategy = ContinuousTargetHelixStrategy(r=r, angular_velocity=omega, vertical_velocity=vz)
+        strategy = ContinuousDirectPursuit3D(
+            pursuer_velocity=Point3D(pursuer_speed, pursuer_speed, pursuer_speed),
+            target_strategy=target_strategy,
+            capture_distance=0.01
+        )
+        solution = run_continuous_simulation(initial_state.copy(), strategy, t_span=(0, 15), max_step=0.05)
+        # Projekcja trajektorii na płaszczyznę XY (cień)
+        ax.plot(solution.y[0], solution.y[1], [z_min] * len(solution.y[0]), 
+                color=color, linewidth=0.8, alpha=0.25, linestyle=':')
 
-    ax.set_xlabel("x [m]")
-    ax.set_ylabel("y [m]")
-    ax.set_zlabel("z [m]")
-    ax.set_title("Pościg 3D: cel na trajektorii helisoidalnej")
-    ax.legend(loc="upper left")
+    ax.set_xlabel("x [m]", fontsize=12, labelpad=10)
+    ax.set_ylabel("y [m]", fontsize=12, labelpad=10)
+    ax.set_zlabel("z [m]", fontsize=12, labelpad=10)
+    ax.set_title("Pościg 3D: cel na trajektorii helisoidalnej", fontsize=14, fontweight='bold', pad=15)
+    
+    # Lepszy kąt widzenia dla 3D
+    ax.view_init(elev=25, azim=45)
+    
+    # Siatka tła
+    ax.xaxis.pane.fill = True
+    ax.yaxis.pane.fill = True
+    ax.zaxis.pane.fill = True
+    ax.xaxis.pane.set_facecolor((0.95, 0.95, 0.98, 0.8))
+    ax.yaxis.pane.set_facecolor((0.92, 0.92, 0.96, 0.8))
+    ax.zaxis.pane.set_facecolor((0.90, 0.90, 0.94, 0.8))
+    
+    # Legenda poza wykresem
+    ax.legend(loc="upper left", bbox_to_anchor=(0.02, 0.98), fontsize=10, 
+              framealpha=0.95, edgecolor='gray')
 
     plt.tight_layout()
     plt.savefig(FIGURES_DIR / "helix_pursuit_3d.pdf", dpi=150, bbox_inches="tight")
@@ -382,7 +480,7 @@ def generate_lissajous_pursuit_3d():
     """
     print("Generowanie wykresu: pościg 3D (Lissajous)...")
 
-    fig = plt.figure(figsize=(14, 5))
+    fig = plt.figure(figsize=(15, 5))
 
     # Parametry
     pursuer_start = [5.0, 5.0, 5.0]
@@ -391,6 +489,7 @@ def generate_lissajous_pursuit_3d():
 
     A = Point3D(3.0, 3.0, 3.0)
     pursuer_speed = 3.0
+    capture_distance = 0.1
 
     frequency_ratios = [
         ("1:1:1", Point3D(1.0, 1.0, 1.0)),
@@ -405,23 +504,34 @@ def generate_lissajous_pursuit_3d():
         strategy = ContinuousDirectPursuit3D(
             pursuer_velocity=Point3D(pursuer_speed, pursuer_speed, pursuer_speed),
             target_strategy=target_strategy,
+            capture_distance=capture_distance,
         )
 
-        solution = run_continuous_simulation(initial_state.copy(), strategy, t_span=(0, 10), max_step=0.02)
+        solution = run_continuous_simulation(initial_state.copy(), strategy, t_span=(0, 30), max_step=0.02)
 
-        # Trajektoria ścigającego
-        ax.plot(solution.y[0], solution.y[1], solution.y[2], color=COLORS["pursuer"], linewidth=2, label="Ścigający")
+        # Sprawdź czy nastąpiło przechwycenie
+        final_pursuer = np.array([solution.y[0][-1], solution.y[1][-1], solution.y[2][-1]])
+        final_target_pos = np.array([
+            A.x * np.sin(omega.x * solution.t[-1]),
+            A.y * np.sin(omega.y * solution.t[-1]),
+            A.z * np.sin(omega.z * solution.t[-1]),
+        ])
+        final_distance = np.linalg.norm(final_target_pos - final_pursuer)
+        captured = final_distance <= capture_distance * 1.5  # Mały margines
 
-        # Trajektoria celu (pełna krzywa Lissajous)
-        t_full = np.linspace(0, 2 * np.pi, 500)
-        target_x = A.x * np.sin(omega.x * t_full)
-        target_y = A.y * np.sin(omega.y * t_full)
-        target_z = A.z * np.sin(omega.z * t_full)
+        # Pełna trajektoria Lissajous (na szaro, jako tło)
+        # Użyj odpowiedniego okresu dla pełnej krzywej
+        lcm_period = 2 * np.pi * max(1, int(np.lcm.reduce([int(omega.x), int(omega.y), int(omega.z)])))
+        t_full = np.linspace(0, lcm_period, 1000)
+        target_x_full = A.x * np.sin(omega.x * t_full)
+        target_y_full = A.y * np.sin(omega.y * t_full)
+        target_z_full = A.z * np.sin(omega.z * t_full)
         ax.plot(
-            target_x, target_y, target_z, "--", color=COLORS["target"], linewidth=1, alpha=0.5, label="Krzywa Lissajous"
+            target_x_full, target_y_full, target_z_full,
+            "-", color="gray", linewidth=1.5, alpha=0.4, label="Pełna krzywa Lissajous", zorder=1
         )
 
-        # Faktyczna trajektoria celu podczas symulacji
+        # Faktyczna trajektoria celu podczas symulacji (czerwona)
         target_x_sim = A.x * np.sin(omega.x * solution.t)
         target_y_sim = A.y * np.sin(omega.y * solution.t)
         target_z_sim = A.z * np.sin(omega.z * solution.t)
@@ -430,10 +540,17 @@ def generate_lissajous_pursuit_3d():
             target_y_sim,
             target_z_sim,
             "-",
-            color="red",
-            linewidth=1.5,
-            alpha=0.7,
+            color=COLORS["target"],
+            linewidth=2,
+            alpha=0.9,
             label="Trajektoria celu",
+            zorder=2
+        )
+
+        # Trajektoria ścigającego (niebieska)
+        ax.plot(
+            solution.y[0], solution.y[1], solution.y[2],
+            color=COLORS["pursuer"], linewidth=2.5, label="Ścigający", zorder=3
         )
 
         # Punkty startowe
@@ -441,63 +558,86 @@ def generate_lissajous_pursuit_3d():
             [pursuer_start[0]],
             [pursuer_start[1]],
             [pursuer_start[2]],
-            color="blue",
-            s=60,
+            color=COLORS["pursuer"],
+            s=80,
             marker="o",
             edgecolors="white",
-            linewidth=1,
+            linewidth=1.5,
+            zorder=5,
+            label="Start ścigającego"
         )
         ax.scatter(
             [target_start[0]],
             [target_start[1]],
             [target_start[2]],
-            color="red",
-            s=60,
+            color=COLORS["target"],
+            s=80,
             marker="s",
             edgecolors="white",
-            linewidth=1,
+            linewidth=1.5,
+            zorder=5,
+            label="Start celu"
         )
 
-        ax.set_xlabel("x [m]")
-        ax.set_ylabel("y [m]")
-        ax.set_zlabel("z [m]")
-        ax.set_title(f"ω = {ratio_name}")
-        if idx == 0:
-            ax.legend(loc="upper left", fontsize=8)
+        # Punkt przechwycenia (jeśli nastąpiło)
+        if captured:
+            ax.scatter(
+                [final_pursuer[0]],
+                [final_pursuer[1]],
+                [final_pursuer[2]],
+                color="lime",
+                s=120,
+                marker="*",
+                edgecolors="darkgreen",
+                linewidth=1.5,
+                zorder=6,
+                label=f"Przechwycenie (t={solution.t[-1]:.2f}s)"
+            )
+            capture_text = f"t = {solution.t[-1]:.2f}s"
+        else:
+            capture_text = "brak"
 
-    plt.suptitle("Pościg 3D: cel na krzywych Lissajous", fontsize=14)
+        ax.set_xlabel("x [m]", fontsize=9)
+        ax.set_ylabel("y [m]", fontsize=9)
+        ax.set_zlabel("z [m]", fontsize=9)
+        ax.set_title(f"ω = {ratio_name}\nPrzechwycenie: {capture_text}", fontsize=10)
+
+        # Ustaw ładniejszy kąt widzenia
+        ax.view_init(elev=20, azim=45 + idx * 30)
+
+        if idx == 0:
+            ax.legend(loc="upper left", fontsize=7, framealpha=0.9)
+
+    plt.suptitle("Pościg 3D: cel na krzywych Lissajous", fontsize=14, fontweight="bold")
     plt.tight_layout()
     plt.savefig(FIGURES_DIR / "lissajous_pursuit_3d.pdf", dpi=150, bbox_inches="tight")
     plt.close()
     print(f"  Zapisano: {FIGURES_DIR / 'lissajous_pursuit_3d.pdf'}")
 
 
-def generate_velocity_ratio_analysis():
+def generate_velocity_ratio_trajectories():
     """
-    Generuje wykres analizy stosunku prędkości dla celu na okręgu.
+    Generuje wykres trajektorii dla różnych stosunków prędkości.
     """
-    print("Generowanie wykresu: analiza stosunku prędkości...")
+    print("Generowanie wykresu: trajektorie stosunku prędkości...")
 
-    fig, axes = plt.subplots(1, 2, figsize=(14, 6))
+    fig, ax = plt.subplots(figsize=(10, 10))
 
     # Parametry
     r = 3.0
     omega = 0.5
     target_speed = r * omega
+    capture_distance = 0.05  # Zmniejszona tolerancja przechwycenia
     initial_state = [8.0, 0.0, r, 0.0]
 
     velocity_ratios = [1.1, 1.5, 2.0, 3.0]
     colors_ratio = ["#dc2626", "#ea580c", "#16a34a", "#2563eb"]
 
-    ax1 = axes[0]
-
     # Rysuj okrąg celu
     theta = np.linspace(0, 2 * np.pi, 200)
     circle_x = r * np.cos(theta)
     circle_y = r * np.sin(theta)
-    ax1.plot(circle_x, circle_y, "--", color="gray", alpha=0.5, linewidth=1, label="Orbita celu")
-
-    capture_times = []
+    ax.plot(circle_x, circle_y, "--", color="gray", alpha=0.5, linewidth=1, label="Orbita celu")
 
     for ratio, color in zip(velocity_ratios, colors_ratio):
         pursuer_speed = ratio * target_speed
@@ -505,17 +645,39 @@ def generate_velocity_ratio_analysis():
         strategy = ContinuousDirectPursuit(
             pursuer_velocity=Point2D(pursuer_speed, pursuer_speed),
             target_strategy=target_strategy,
+            capture_distance=capture_distance,
         )
 
         solution = run_continuous_simulation(initial_state.copy(), strategy, t_span=(0, 20), rtol=1e-6)
 
-        ax1.plot(
+        ax.plot(
             solution.y[0], solution.y[1], color=color, linewidth=2, label=f"ρ = {ratio} (vp = {pursuer_speed:.2f} m/s)"
         )
 
-        capture_times.append((ratio, solution.t[-1]))
+        # Punkt przechwycenia z adnotacją
+        intercept_x, intercept_y = solution.y[0][-1], solution.y[1][-1]
+        ax.scatter(
+            [intercept_x],
+            [intercept_y],
+            color=color,
+            s=120,
+            marker="X",
+            zorder=6,
+            edgecolors="white",
+            linewidth=1.5,
+        )
+        # Adnotacja z czasem przechwycenia
+        ax.annotate(
+            f"t={solution.t[-1]:.2f}s",
+            (intercept_x, intercept_y),
+            textcoords="offset points",
+            xytext=(8, 8),
+            fontsize=8,
+            color=color,
+            fontweight="bold",
+        )
 
-    ax1.scatter(
+    ax.scatter(
         [initial_state[0]],
         [initial_state[1]],
         color="blue",
@@ -526,39 +688,75 @@ def generate_velocity_ratio_analysis():
         linewidth=1.5,
         label="Start ścigającego",
     )
-    ax1.scatter(
+    ax.scatter(
         [r], [0], color="red", s=100, marker="s", zorder=5, edgecolors="white", linewidth=1.5, label="Start celu"
     )
 
-    ax1.set_xlabel("x [m]")
-    ax1.set_ylabel("y [m]")
-    ax1.set_title("Trajektorie dla różnych stosunków prędkości ρ = vp/vt")
-    ax1.legend(loc="upper left", fontsize=9)
-    ax1.set_aspect("equal", adjustable="box")
-    ax1.grid(True, alpha=0.3)
+    ax.set_xlabel("x [m]")
+    ax.set_ylabel("y [m]")
+    ax.set_title("Trajektorie dla różnych stosunków prędkości ρ = vp/vt")
+    ax.legend(loc="upper left", fontsize=9)
+    ax.set_aspect("equal", adjustable="box")
+    ax.grid(True, alpha=0.3)
 
-    # Wykres czasu przechwycenia
-    ax2 = axes[1]
+    plt.tight_layout()
+    plt.savefig(FIGURES_DIR / "velocity_ratio_trajectories.pdf", dpi=150, bbox_inches="tight")
+    plt.close()
+    print(f"  Zapisano: {FIGURES_DIR / 'velocity_ratio_trajectories.pdf'}")
+
+
+def generate_velocity_ratio_times():
+    """
+    Generuje wykres słupkowy czasów przechwycenia dla różnych stosunków prędkości.
+    """
+    print("Generowanie wykresu: czasy przechwycenia stosunku prędkości...")
+
+    fig, ax = plt.subplots(figsize=(10, 7))
+
+    # Parametry
+    r = 3.0
+    omega = 0.5
+    target_speed = r * omega
+    capture_distance = 0.1
+    initial_state = [8.0, 0.0, r, 0.0]
+
+    velocity_ratios = [1.1, 1.5, 2.0, 3.0]
+    colors_ratio = ["#dc2626", "#ea580c", "#16a34a", "#2563eb"]
+
+    capture_times = []
+
+    for ratio, color in zip(velocity_ratios, colors_ratio):
+        pursuer_speed = ratio * target_speed
+        target_strategy = ContinuousTargetCircleStrategy(angular_velocity=omega, r=r)
+        strategy = ContinuousDirectPursuit(
+            pursuer_velocity=Point2D(pursuer_speed, pursuer_speed),
+            target_strategy=target_strategy,
+            capture_distance=capture_distance,
+        )
+
+        solution = run_continuous_simulation(initial_state.copy(), strategy, t_span=(0, 20), rtol=1e-6)
+        capture_times.append((ratio, solution.t[-1]))
+
     ratios = [ct[0] for ct in capture_times]
     times = [ct[1] for ct in capture_times]
     T_orbit = 2 * np.pi * r / target_speed
     normalized_times = [t / T_orbit for t in times]
 
-    ax2.bar(range(len(ratios)), normalized_times, color=colors_ratio, edgecolor="black", linewidth=1)
-    ax2.set_xticks(range(len(ratios)))
-    ax2.set_xticklabels([f"ρ = {r}" for r in ratios])
-    ax2.set_ylabel("Czas przechwycenia [T_orbit]")
-    ax2.set_title("Znormalizowany czas przechwycenia")
-    ax2.grid(True, alpha=0.3, axis="y")
+    ax.bar(range(len(ratios)), normalized_times, color=colors_ratio, edgecolor="black", linewidth=1)
+    ax.set_xticks(range(len(ratios)))
+    ax.set_xticklabels([f"ρ = {ratio}" for ratio in ratios])
+    ax.set_ylabel("Czas przechwycenia [T_orbit]")
+    ax.set_title("Znormalizowany czas przechwycenia dla różnych stosunków prędkości")
+    ax.grid(True, alpha=0.3, axis="y")
 
     # Dodaj wartości na słupkach
-    for i, (r, nt) in enumerate(zip(ratios, normalized_times)):
-        ax2.text(i, nt + 0.02, f"{nt:.2f}", ha="center", fontsize=10)
+    for i, (ratio, nt) in enumerate(zip(ratios, normalized_times)):
+        ax.text(i, nt + 0.02, f"{nt:.2f}", ha="center", fontsize=10)
 
     plt.tight_layout()
-    plt.savefig(FIGURES_DIR / "velocity_ratio_analysis.pdf", dpi=150, bbox_inches="tight")
+    plt.savefig(FIGURES_DIR / "velocity_ratio_times.pdf", dpi=150, bbox_inches="tight")
     plt.close()
-    print(f"  Zapisano: {FIGURES_DIR / 'velocity_ratio_analysis.pdf'}")
+    print(f"  Zapisano: {FIGURES_DIR / 'velocity_ratio_times.pdf'}")
 
 
 def generate_bearing_angle_effect():
@@ -567,24 +765,23 @@ def generate_bearing_angle_effect():
     """
     print("Generowanie wykresu: wpływ kąta namiarowania...")
 
-    fig, axes = plt.subplots(1, 2, figsize=(14, 6))
+    fig, ax = plt.subplots(figsize=(16, 7))
 
     # Parametry
     initial_state = [8.0, 2.0, 0.0, 0.0]
     pursuer_speed = 2.0
+    capture_distance = 0.1
     target_strategy = ContinuousTargetLinearStrategy(velocity=Point2D(0.8, 0.6))
 
     bearing_angles = [0, 15, 30, 45, 60]
     colors_bearing = plt.cm.viridis(np.linspace(0.1, 0.9, len(bearing_angles)))
-
-    ax1 = axes[0]
-    lengths = []
 
     for angle, color in zip(bearing_angles, colors_bearing):
         if angle == 0:
             strategy = ContinuousDirectPursuit(
                 pursuer_velocity=Point2D(pursuer_speed, pursuer_speed),
                 target_strategy=target_strategy,
+                capture_distance=capture_distance,
             )
             label = "Direct Pursuit (β=0°)"
         else:
@@ -592,25 +789,33 @@ def generate_bearing_angle_effect():
                 pursuer_velocity=Point2D(pursuer_speed, pursuer_speed),
                 target_strategy=target_strategy,
                 bearing_angle_deg=angle,
+                capture_distance=capture_distance,
             )
             label = f"β = {angle}°"
 
         solution = run_continuous_simulation(initial_state.copy(), strategy, t_span=(0, 30))
-        ax1.plot(solution.y[0], solution.y[1], color=color, linewidth=2, label=label)
+        ax.plot(solution.y[0], solution.y[1], color=color, linewidth=2, label=label)
 
-        # Oblicz długość trajektorii
-        dx = np.diff(solution.y[0])
-        dy = np.diff(solution.y[1])
-        length = np.sum(np.sqrt(dx**2 + dy**2))
-        lengths.append((angle, length))
+        # Punkt przechwycenia (końcowy punkt trajektorii)
+        intercept_x, intercept_y = solution.y[0][-1], solution.y[1][-1]
+        ax.scatter(
+            [intercept_x],
+            [intercept_y],
+            color=color,
+            s=80,
+            marker="X",
+            zorder=6,
+            edgecolors="white",
+            linewidth=1.0,
+        )
 
     # Trajektoria celu
-    t_vals = np.linspace(0, 4, 100)
+    t_vals = np.linspace(0, 10, 100)
     target_x = 0.8 * t_vals
     target_y = 0.6 * t_vals
-    ax1.plot(target_x, target_y, "--", color="gray", linewidth=2, label="Cel")
+    ax.plot(target_x, target_y, "--", color="gray", linewidth=2, label="Cel")
 
-    ax1.scatter(
+    ax.scatter(
         [initial_state[0]],
         [initial_state[1]],
         color="blue",
@@ -620,37 +825,14 @@ def generate_bearing_angle_effect():
         edgecolors="white",
         linewidth=1.5,
     )
-    ax1.scatter([0], [0], color="red", s=100, marker="s", zorder=5, edgecolors="white", linewidth=1.5)
+    ax.scatter([0], [0], color="red", s=100, marker="s", zorder=5, edgecolors="white", linewidth=1.5)
 
-    ax1.set_xlabel("x [m]")
-    ax1.set_ylabel("y [m]")
-    ax1.set_title("Trajektorie dla różnych kątów namiarowania β")
-    ax1.legend(loc="upper left")
-    ax1.set_aspect("equal", adjustable="box")
-    ax1.grid(True, alpha=0.3)
-
-    # Wykres długości trajektorii
-    ax2 = axes[1]
-    angles_plot = [ll[0] for ll in lengths]
-    lengths_plot = [ll[1] for ll in lengths]
-    baseline = lengths_plot[0]
-    ratios_plot = [ll / baseline for ll in lengths_plot]
-
-    ax2.plot(angles_plot, ratios_plot, "o-", color=COLORS["direct"], linewidth=2, markersize=10)
-
-    # Teoretyczna krzywa
-    beta_theory = np.linspace(0, 60, 100)
-    tan_beta = np.tan(np.radians(beta_theory))
-    L_ratio_theory = 1 + 0.307 * tan_beta + 0.150 * tan_beta**2
-    ax2.plot(
-        beta_theory, L_ratio_theory, "--", color="gray", linewidth=1.5, label=r"$1 + 0.307\tan\beta + 0.150\tan^2\beta$"
-    )
-
-    ax2.set_xlabel("Kąt namiarowania β [°]")
-    ax2.set_ylabel("Względne wydłużenie trajektorii")
-    ax2.set_title("Wpływ kąta namiarowania na długość trajektorii")
-    ax2.legend()
-    ax2.grid(True, alpha=0.3)
+    ax.set_xlabel("x [m]")
+    ax.set_ylabel("y [m]")
+    ax.set_title("Trajektorie dla różnych kątów namiarowania β")
+    ax.legend(loc="upper left")
+    ax.set_aspect("equal", adjustable="box")
+    ax.grid(True, alpha=0.3)
 
     plt.tight_layout()
     plt.savefig(FIGURES_DIR / "bearing_angle_effect.pdf", dpi=150, bbox_inches="tight")
@@ -675,42 +857,44 @@ def generate_sphere_pursuit_3d():
     fig = plt.figure(figsize=(14, 6))
 
     # Promień sfery
-    R = 1.0
+    R = 5.0
 
     # Dwie różne konfiguracje
     configs = [
         {
-            "title": "Cel na równiku (dφ=0.5)",
+            # Prosty przypadek - cel na równiku, szybkie przechwycenie
+            "title": "Prosty przypadek (cel na równiku)",
             "dtheta": 0.0,
-            "dphi": 0.5,
-            "initial_pursuer": [R, np.pi / 4, 0.0],  # r, theta, phi
-            "initial_target": [R, 0.0, np.pi],
-            "pursuer_speed": 0.8,
-            "t_span": (0, 10),
+            "dphi": 0.3,
+            "initial_pursuer": [R, np.pi / 6, np.pi],  # r, theta, phi
+            "initial_target": [R, 0.0, 0.0],
+            "pursuer_speed": 2.5,
+            "t_span": (0, 15),
         },
         {
-            "title": "Cel spiralny (dθ=0.3, dφ=0.4)",
-            "dtheta": 0.3,
+            # Ciekawszy przypadek - spiralny ruch celu, dłuższy pościg
+            "title": "Złożony przypadek ($v_p/v_t \\approx 1.2$)",
+            "dtheta": 0.15,
             "dphi": 0.4,
-            "initial_pursuer": [R, 0.0, 0.0],
-            "initial_target": [R, np.pi / 3, np.pi],
-            "pursuer_speed": 0.8,
-            "t_span": (0, 12),
+            "initial_pursuer": [R, np.pi / 2, 0.0],  # start na równiku
+            "initial_target": [R, -np.pi / 4, np.pi],  # cel na przeciwnej stronie
+            "pursuer_speed": 2.5,  # mała przewaga -> dłuższy pościg
+            "t_span": (0, 25),
         },
     ]
 
     for idx, config in enumerate(configs):
         ax = fig.add_subplot(1, 2, idx + 1, projection="3d")
 
-        # Rysuj powierzchnię sfery
-        u_grid = np.linspace(0, 2 * np.pi, 50)
-        v_grid = np.linspace(-np.pi / 2, np.pi / 2, 30)
+        # Rysuj powierzchnię sfery z lepszą przezroczystością
+        u_grid = np.linspace(0, 2 * np.pi, 60)
+        v_grid = np.linspace(-np.pi / 2, np.pi / 2, 40)
         U, V = np.meshgrid(u_grid, v_grid)
         X = R * np.cos(V) * np.cos(U)
         Y = R * np.cos(V) * np.sin(U)
         Z = R * np.sin(V)
 
-        ax.plot_surface(X, Y, Z, alpha=0.15, color="gray", edgecolor="none")
+        ax.plot_surface(X, Y, Z, alpha=0.12, color="lightblue", edgecolor="none")
 
         # Rysuj siatki pomocnicze - równoleżniki
         for theta_line in np.linspace(-np.pi / 3, np.pi / 3, 5):
@@ -718,7 +902,7 @@ def generate_sphere_pursuit_3d():
             x = R * np.cos(theta_line) * np.cos(phi_vals)
             y = R * np.cos(theta_line) * np.sin(phi_vals)
             z = R * np.sin(theta_line) * np.ones_like(phi_vals)
-            ax.plot(x, y, z, color="gray", alpha=0.2, linewidth=0.5)
+            ax.plot(x, y, z, color="gray", alpha=0.25, linewidth=0.5)
 
         # Rysuj siatki pomocnicze - południki
         for phi_line in np.linspace(0, 2 * np.pi, 12, endpoint=False):
@@ -726,7 +910,14 @@ def generate_sphere_pursuit_3d():
             x = R * np.cos(theta_vals) * np.cos(phi_line)
             y = R * np.cos(theta_vals) * np.sin(phi_line)
             z = R * np.sin(theta_vals)
-            ax.plot(x, y, z, color="gray", alpha=0.2, linewidth=0.5)
+            ax.plot(x, y, z, color="gray", alpha=0.25, linewidth=0.5)
+
+        # Rysuj równik wyraźniej
+        phi_equator = np.linspace(0, 2 * np.pi, 100)
+        x_eq = R * np.cos(phi_equator)
+        y_eq = R * np.sin(phi_equator)
+        z_eq = np.zeros_like(phi_equator)
+        ax.plot(x_eq, y_eq, z_eq, color="darkgray", alpha=0.5, linewidth=1.0)
 
         # Symulacja pościgu
         initial_state = config["initial_pursuer"] + config["initial_target"]
@@ -737,7 +928,7 @@ def generate_sphere_pursuit_3d():
             initial_state.copy(),
             strategy,
             t_span=config["t_span"],
-            max_step=0.02,
+            max_step=0.01,
         )
 
         # Trajektoria ścigającego
@@ -747,7 +938,7 @@ def generate_sphere_pursuit_3d():
         px = pursuer_r * np.cos(pursuer_theta) * np.cos(pursuer_phi)
         py = pursuer_r * np.cos(pursuer_theta) * np.sin(pursuer_phi)
         pz = pursuer_r * np.sin(pursuer_theta)
-        ax.plot(px, py, pz, color="#2563eb", linewidth=2.5, label="Ścigający")
+        ax.plot(px, py, pz, color="#2563eb", linewidth=2.5, label="Ścigający", zorder=3)
 
         # Trajektoria celu
         target_r = solution.y[3]
@@ -756,42 +947,47 @@ def generate_sphere_pursuit_3d():
         tx = target_r * np.cos(target_theta) * np.cos(target_phi)
         ty = target_r * np.cos(target_theta) * np.sin(target_phi)
         tz = target_r * np.sin(target_theta)
-        ax.plot(tx, ty, tz, color="#dc2626", linewidth=2.5, label="Cel", linestyle="--")
+        ax.plot(tx, ty, tz, color="#dc2626", linewidth=2.5, label="Cel", linestyle="--", zorder=3)
 
-        # Punkty startowe
+        # Punkty startowe (większe)
         ax.scatter(
-            [px[0]], [py[0]], [pz[0]], color="#2563eb", s=100, marker="o", edgecolors="white", linewidth=1.5, zorder=5
+            [px[0]], [py[0]], [pz[0]], color="#2563eb", s=150, marker="o", edgecolors="white", linewidth=2, zorder=5,
+            label="Start ścigającego"
         )
         ax.scatter(
-            [tx[0]], [ty[0]], [tz[0]], color="#dc2626", s=100, marker="s", edgecolors="white", linewidth=1.5, zorder=5
+            [tx[0]], [ty[0]], [tz[0]], color="#dc2626", s=150, marker="s", edgecolors="white", linewidth=2, zorder=5,
+            label="Start celu"
         )
 
-        # Punkt przechwycenia
+        # Punkt przechwycenia (znacznie większy)
         ax.scatter(
             [px[-1]],
             [py[-1]],
             [pz[-1]],
             color="#16a34a",
-            s=80,
+            s=400,
             marker="*",
-            edgecolors="white",
-            linewidth=1,
-            zorder=5,
+            edgecolors="black",
+            linewidth=1.5,
+            zorder=10,
             label="Przechwycenie",
         )
 
-        ax.set_xlabel("x")
-        ax.set_ylabel("y")
-        ax.set_zlabel("z")
-        ax.set_title(config["title"])
-        ax.legend(loc="upper left", fontsize=9)
+        ax.set_xlabel("x", fontsize=10)
+        ax.set_ylabel("y", fontsize=10)
+        ax.set_zlabel("z", fontsize=10)
+        ax.set_title(config["title"], fontsize=12)
+        ax.legend(loc="upper left", fontsize=8, framealpha=0.9)
 
         # Ustaw proporcje
-        ax.set_xlim(-R * 1.2, R * 1.2)
-        ax.set_ylim(-R * 1.2, R * 1.2)
-        ax.set_zlim(-R * 1.2, R * 1.2)
+        ax.set_xlim(-R * 1.15, R * 1.15)
+        ax.set_ylim(-R * 1.15, R * 1.15)
+        ax.set_zlim(-R * 1.15, R * 1.15)
 
-    plt.suptitle("Pościg na sferze $S^2$ (R=1.0)", fontsize=14)
+        # Lepszy kąt widzenia
+        ax.view_init(elev=25, azim=45)
+
+    plt.suptitle("Pościg na sferze $S^2$ (R=5.0, współrzędne sferyczne)", fontsize=14, fontweight="bold")
     plt.tight_layout()
     plt.savefig(FIGURES_DIR / "sphere_pursuit_3d.pdf", dpi=150, bbox_inches="tight")
     plt.close()
@@ -931,7 +1127,8 @@ def main():
     # Generuj wszystkie wykresy
     generate_strategy_comparison_linear_target()
     generate_strategy_comparison_circular_target()
-    generate_velocity_ratio_analysis()
+    generate_velocity_ratio_trajectories()
+    generate_velocity_ratio_times()
     generate_bearing_angle_effect()
     generate_cyclic_pursuit()
     generate_helix_pursuit_3d()

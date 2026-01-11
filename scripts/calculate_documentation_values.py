@@ -27,6 +27,7 @@ from pursuit_curve.d3.continuous import (
     ContinuousTargetLissajousStrategy,
 )
 from pursuit_curve.dn.continuous import ContinuousDirectPursuitND, ContinuousTargetLinearStrategyND
+from pursuit_curve.sphere.continuous import ContinuousDirectPursuitSphere, ContinuousTargetSphereStrategy
 from pursuit_curve.torus.continuous import ContinuousDirectPursuitTorus, ContinuousTargetTorusStrategy
 
 
@@ -287,7 +288,7 @@ def calculate_cyclic_pursuit_values():
         for angle in angles:
             initial_positions.extend([R * np.cos(angle), R * np.sin(angle)])
 
-        strategy = ContinuousCyclicPursuit(velocity=Point2D(v, v), n=n)
+        strategy = ContinuousCyclicPursuit(velocity=Point2D(v, v), n=n, capture_distance=0.01)
 
         try:
             solution = run_continuous_simulation(
@@ -346,6 +347,7 @@ def calculate_helix_pursuit_values():
         strategy = ContinuousDirectPursuit3D(
             pursuer_velocity=Point3D(pursuer_speed, pursuer_speed, pursuer_speed),
             target_strategy=target_strategy,
+            capture_distance=0.01
         )
 
         try:
@@ -400,6 +402,7 @@ def calculate_lissajous_pursuit_values():
         strategy = ContinuousDirectPursuit3D(
             pursuer_velocity=Point3D(pursuer_speed, pursuer_speed, pursuer_speed),
             target_strategy=target_strategy,
+            capture_distance=0.01,
         )
 
         try:
@@ -581,6 +584,89 @@ def calculate_torus_pursuit_values():
     return results
 
 
+def calculate_sphere_pursuit_values():
+    """
+    Oblicza wartości dla pościgu na sferze S^2 dla różnych stosunków prędkości.
+    """
+    print("\n" + "=" * 80)
+    print("POŚCIG NA SFERZE S^2")
+    print("=" * 80)
+
+    results = {}
+    R = 5.0  # promień sfery
+
+    # Parametry celu (prędkości kątowe)
+    dtheta = 0.1  # rad/s
+    dphi = np.pi / 4  # rad/s
+
+    # Oblicz prędkość liniową celu (przybliżona, zależy od pozycji)
+    # v_target ≈ R * sqrt(dtheta^2 + sin^2(theta) * dphi^2)
+    # Dla theta = pi/2: v_target = R * sqrt(dtheta^2 + dphi^2)
+    target_speed_estimate = R * np.sqrt(dtheta**2 + dphi**2)
+    print(f"Promień sfery: R = {R}")
+    print(f"Prędkości kątowe celu: dθ/dt = {dtheta}, dφ/dt = {dphi:.4f}")
+    print(f"Szacowana prędkość liniowa celu: ~{target_speed_estimate:.2f}")
+
+    # Pozycje startowe (r, theta, phi)
+    # Ścigający: theta = pi/4, phi = 2.0
+    # Cel: theta = 0 (biegun), phi = 0
+    initial_pursuer = [R, np.pi / 4, 2.0]
+    initial_target = [R, 0.0, 0.0]
+    initial_state = initial_pursuer + initial_target
+
+    # Oblicz początkową odległość kątową
+    theta_p, phi_p = initial_pursuer[1], initial_pursuer[2]
+    theta_t, phi_t = initial_target[1], initial_target[2]
+    cos_dist = np.sin(theta_p) * np.sin(theta_t) + np.cos(theta_p) * np.cos(theta_t) * np.cos(phi_t - phi_p)
+    initial_angular_dist = np.arccos(np.clip(cos_dist, -1.0, 1.0))
+    print(f"Początkowa odległość kątowa: {initial_angular_dist:.3f} rad ({np.degrees(initial_angular_dist):.1f}°)")
+
+    velocity_ratios = [1.5, 2.0, 3.0]
+
+    for ratio in velocity_ratios:
+        pursuer_speed = ratio * target_speed_estimate
+        print(f"\n--- Stosunek prędkości v_p/v_t ≈ {ratio} (v_p = {pursuer_speed:.2f}) ---")
+
+        target_strategy = ContinuousTargetSphereStrategy(dr=0.0, dtheta=dtheta, dphi=dphi)
+        strategy = ContinuousDirectPursuitSphere(vel=pursuer_speed, target_strategy=target_strategy)
+
+        try:
+            solution = run_continuous_simulation(initial_state, strategy, t_span=(0, 120), max_step=0.01)
+            catch_time = solution.t[-1]
+
+            # Oblicz długość trajektorii (w radianach - odległość kątowa przebyta)
+            pursuer_theta = solution.y[1]
+            pursuer_phi = solution.y[2]
+            dtheta_traj = np.diff(pursuer_theta)
+            dphi_traj = np.diff(pursuer_phi)
+            # Przybliżona długość łukowa na sferze jednostkowej
+            sin_theta_avg = np.sin((pursuer_theta[:-1] + pursuer_theta[1:]) / 2)
+            segment_lengths = np.sqrt(dtheta_traj**2 + (sin_theta_avg * dphi_traj)**2)
+            trajectory_length = float(np.sum(segment_lengths))
+
+            # Liczba okrążeń (przybliżona - bazując na phi)
+            total_phi_change = np.abs(pursuer_phi[-1] - pursuer_phi[0])
+            num_orbits = total_phi_change / (2 * np.pi)
+
+            ratio_str = str(ratio).replace(".", "_")
+            results[f"SPHERE_TIME_{ratio_str}"] = catch_time
+            results[f"SPHERE_LENGTH_{ratio_str}"] = trajectory_length
+            results[f"SPHERE_ORBITS_{ratio_str}"] = num_orbits
+
+            print(f"Czas pościgu: {catch_time:.2f} s")
+            print(f"Długość trajektorii: {trajectory_length:.2f} rad")
+            print(f"Liczba okrążeń: {num_orbits:.2f}")
+
+        except Exception as e:
+            print(f"Błąd: {e}")
+            ratio_str = str(ratio).replace(".", "_")
+            results[f"SPHERE_TIME_{ratio_str}"] = float("inf")
+            results[f"SPHERE_LENGTH_{ratio_str}"] = float("inf")
+            results[f"SPHERE_ORBITS_{ratio_str}"] = float("inf")
+
+    return results
+
+
 def print_all_values_for_documentation():
     """
     Drukuje wszystkie obliczone wartości w formacie gotowym do wklejenia do dokumentacji.
@@ -599,6 +685,7 @@ def print_all_values_for_documentation():
     lissajous_values = calculate_lissajous_pursuit_values()
     dimensional_values = calculate_dimensional_scaling_values()
     torus_values = calculate_torus_pursuit_values()
+    sphere_values = calculate_sphere_pursuit_values()
 
     # Połącz wszystkie wyniki
     all_values = {
@@ -611,6 +698,7 @@ def print_all_values_for_documentation():
         **lissajous_values,
         **dimensional_values,
         **torus_values,
+        **sphere_values,
     }
 
     print("\n" + "=" * 80)
@@ -684,6 +772,13 @@ def print_all_values_for_documentation():
     for key in ["RIEMANNIAN_IMPROVEMENT_MIN", "RIEMANNIAN_IMPROVEMENT_MAX"]:
         if key in all_values:
             print(f"{key} = {all_values[key]:.1f}")
+
+    print("\n--- SEKCJA: Pościg na sferze S^2 ---")
+    for ratio in ["1_5", "2_0", "3_0"]:
+        for key_type in ["SPHERE_TIME_", "SPHERE_LENGTH_", "SPHERE_ORBITS_"]:
+            key = f"{key_type}{ratio}"
+            if key in all_values:
+                print(f"{key} = {all_values[key]:.2f}")
 
     print("\n" + "=" * 80)
     print("KONIEC WARTOŚCI")

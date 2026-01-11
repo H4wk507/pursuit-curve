@@ -7,9 +7,10 @@ from pursuit_curve.common import Point3D, Strategy, TargetStrategy
 
 
 class ContinuousDirectPursuit3D(Strategy):
-    def __init__(self, pursuer_velocity: Point3D, target_strategy: TargetStrategy):
+    def __init__(self, pursuer_velocity: Point3D, target_strategy: TargetStrategy, capture_distance: float = 0.05):
         self.pursuer_velocity = pursuer_velocity
         self.target_strategy = target_strategy
+        self.capture_distance = capture_distance
 
     def dynamics(self, t: float, y: NDArray[np.float32]) -> np.ndarray:
         pursuer_pos = y[0:3]
@@ -37,7 +38,7 @@ class ContinuousDirectPursuit3D(Strategy):
         pursuer_pos = np.array(y[0:3], dtype=np.float32)
         target_pos = np.array(y[3:6], dtype=np.float32)
         distance = np.linalg.norm(target_pos - pursuer_pos)
-        return distance - 0.5
+        return distance - self.capture_distance
 
     stop_condition.terminal = True
     stop_condition.direction = -1
