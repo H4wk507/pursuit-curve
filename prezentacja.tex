@@ -1,0 +1,504 @@
+\documentclass[aspectratio=169,11pt]{beamer}
+
+\usepackage[utf8]{inputenc}
+\usepackage[polish]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{tikz}
+
+% Theme
+\usetheme{Madrid}
+\usecolortheme{default}
+
+% Colors
+\definecolor{primary}{RGB}{0,83,155}
+\setbeamercolor{structure}{fg=primary}
+\setbeamercolor{title}{fg=white,bg=primary}
+\setbeamercolor{frametitle}{fg=white,bg=primary}
+
+% Remove navigation symbols
+\setbeamertemplate{navigation symbols}{}
+
+% Graphics path
+\graphicspath{{figures/}}
+
+% Smaller font for tables
+\newcommand{\tablefontsize}{\fontsize{8}{10}\selectfont}
+
+% Title
+\title[Krzywa pogoni]{Krzywa pogoni}
+\subtitle{Modelowanie matematyczne}
+\author{Skowroński Piotr \and Czuba Krzysztof}
+\institute{Informatyka, studia II stopnia (sem. II)}
+\date{\today}
+
+\begin{document}
+
+% ============================================
+% SLAJD TYTUŁOWY
+% ============================================
+\begin{frame}
+\titlepage
+\end{frame}
+
+% ============================================
+% AGENDA
+% ============================================
+\begin{frame}{Plan prezentacji}
+\tableofcontents
+\end{frame}
+
+% ============================================
+\section{Wprowadzenie}
+% ============================================
+
+\begin{frame}{Czym jest problem pościgu?}
+\textbf{Problem:} Określenie trajektorii ścigającego, który dąży do przechwycenia poruszającego się celu.
+
+\vspace{0.5cm}
+\textbf{Zastosowania:}
+\begin{itemize}
+    \item Naprowadzanie rakiet i pocisków
+    \item Roboty autonomiczne i drony
+    \item Nawigacja morska i lotnicza
+    \item AI w grach komputerowych
+    \item Optymalizacja trajektorii
+\end{itemize}
+
+\vspace{0.5cm}
+\textbf{Podejście:} Rozwiązywanie równań różniczkowych opisujących ruch ścigającego i celu.
+\end{frame}
+
+% ============================================
+\section{Strategie pościgu}
+% ============================================
+
+\begin{frame}{Pościg bezpośredni (Direct Pursuit)}
+Ścigający w każdej chwili celuje \textbf{bezpośrednio} w aktualną pozycję celu.
+
+\vspace{0.5cm}
+\textbf{Równanie ruchu:}
+\begin{equation*}
+\frac{d\vec{p}}{dt} = v_p \cdot \frac{\vec{t} - \vec{p}}{\|\vec{t} - \vec{p}\|}
+\end{equation*}
+
+gdzie:
+\begin{itemize}
+    \item $\vec{p}$ -- pozycja ścigającego
+    \item $\vec{t}$ -- pozycja celu
+    \item $v_p$ -- prędkość ścigającego
+\end{itemize}
+
+\vspace{0.3cm}
+\textbf{Warunek przechwycenia:} $v_p > v_t$ (ścigający szybszy od celu)
+\end{frame}
+
+\begin{frame}{Pościg bezpośredni -- wizualizacja}
+\centering
+\includegraphics[height=0.8\textheight]{direct_pursuit_linear.pdf}
+\end{frame}
+
+\begin{frame}{Stały kąt namiarowania (Constant Bearing)}
+Ścigający porusza się pod \textbf{stałym kątem} $\beta$ względem kierunku do celu.
+
+\vspace{0.4cm}
+\textbf{Równania:}
+\begin{align*}
+\theta_{\text{target}} &= \arctan2(t_y - p_y, t_x - p_x) \\
+\theta_{\text{pursuer}} &= \theta_{\text{target}} + \beta
+\end{align*}
+
+\vspace{0.4cm}
+Trajektoria tworzy \textbf{spiralę logarytmiczną}.
+
+\end{frame}
+
+\begin{frame}{Stały kąt namiarowania -- wizualizacja}
+\centering
+\includegraphics[height=0.8\textheight,width=0.6\textwidth]{bearing_angle_effect.pdf}
+\end{frame}
+
+\begin{frame}{Nawigacja proporcjonalna (Proportional Navigation)}
+Strategia szeroko stosowana w \textbf{naprowadzaniu pocisków}.
+
+\vspace{0.3cm}
+\textbf{Kąt LOS (Line of Sight):}
+\begin{equation*}
+\lambda = \arctan2(t_y - p_y, t_x - p_x)
+\end{equation*}
+
+\textbf{Zmiana kąta LOS:}
+\begin{equation*}
+\Delta\lambda = \lambda(t) - \lambda(t - \Delta t)
+\end{equation*}
+
+\textbf{Aktualizacja kierunku ścigającego:}
+\begin{equation*}
+\theta_{\text{new}} = \theta_{\text{current}} + N \cdot \Delta\lambda
+\end{equation*}
+
+gdzie $N$ -- stała nawigacji (typowo 3--5). \textbf{Optymalna wartość:} $N \in [3, 4]$.
+\end{frame}
+
+\begin{frame}{Porównanie strategii -- wyniki liczbowe}
+\centering
+\tablefontsize
+\begin{tabular}{@{}llll@{}}
+\toprule
+\textbf{Strategia} & \textbf{Parametr} & \textbf{Wydłużenie trajektorii} & \textbf{Stabilność} \\ \midrule
+Direct Pursuit & -- & $1.0$ (baseline) & Stabilna \\
+\multirow{3}{*}{Constant Bearing} & $\beta = 15°$ & $1.098 \pm 0.05$ & Stabilna \\
+& $\beta = 30°$ & $1.438 \pm 0.05$ & Stabilna \\
+& $\beta = 45°$ & $2.185 \pm 0.05$ & Średnia \\
+\multirow{3}{*}{Proportional Nav.} & $N = 2$ & $0.992 \pm 0.03$ & Wysoka \\
+& $N = 3$ & $0.991 \pm 0.03$ & Wysoka \\
+& $N = 5$ & $0.990 \pm 0.03$ & Średnia \\ \bottomrule
+\end{tabular}
+
+\vspace{0.5cm}
+\normalsize
+\textbf{Wniosek:} Nawigacja proporcjonalna daje najkrótsze trajektorie, ale Direct Pursuit jest prostszy w implementacji.
+\end{frame}
+
+\begin{frame}{Porównanie strategii -- cel liniowy}
+\centering
+\includegraphics[width=0.9\textwidth]{strategy_comparison_linear.pdf}
+\end{frame}
+
+\begin{frame}{Analiza stosunku prędkości $\rho = v_p / v_t$ - cel na okręgu (Direct Pursuit)}
+\centering
+\tablefontsize
+\begin{tabular}{@{}lll@{}}
+\toprule
+\textbf{Stosunek $\rho = v_p/v_t$} & \textbf{Czas zbieżności} & \textbf{Status} \\ \midrule
+$\rho < 1.0$ & $\infty$ & Brak przechwycenia \\
+$\rho = 1.1$ & $0.81 \cdot T_{\text{orbit}}$ & Powolna zbieżność \\
+$\rho = 1.5$ & $0.35 \cdot T_{\text{orbit}}$ & Efektywne przechwycenie \\
+$\rho = 2.0$ & $0.19 \cdot T_{\text{orbit}}$ & Szybkie przechwycenie \\
+$\rho \gg 1$ & $\approx d_0/v_p$ & Zbieżność do ruchu prostoliniowego \\ \bottomrule
+\end{tabular}
+
+\vspace{0.5cm}
+\normalsize
+gdzie $T_{\text{orbit}} = 2\pi r / v_t$ -- okres orbitowania celu, $d_0$ -- początkowa odległość ścigający-cel.
+
+\vspace{0.3cm}
+\textbf{Krytyczna prędkość:} Dla celu na okręgu o promieniu $r$ z $\omega$: \ $v_p > r \cdot \omega = v_t$
+\end{frame}
+
+\begin{frame}{Porównanie strategii -- cel na okręgu}
+\centering
+\includegraphics[width=0.9\textwidth]{strategy_comparison_circular.pdf}
+\end{frame}
+
+
+\begin{frame}{Stosunek prędkości -- trajektorie (Direct Pursuit)}
+\centering
+\includegraphics[width=0.85\textwidth]{velocity_ratio_trajectories.pdf}
+\end{frame}
+
+\begin{frame}{Stosunek prędkości -- czasy przechwycenia}
+\centering
+\includegraphics[height=0.8\textheight,width=0.85\textwidth]{velocity_ratio_times.pdf}
+\end{frame}
+
+\begin{frame}{Pościg cykliczny (Cyclic Pursuit)}
+$n$ agentów na okręgu o promieniu $R$, każdy ściga kolejnego: $\vec{p}_{n+1} = \vec{p}_1$
+
+\vspace{0.2cm}
+\textbf{Równanie ruchu agenta $i$:}
+\begin{equation*}
+\frac{d\vec{p}_i}{dt} = v \cdot \frac{\vec{p}_{i+1} - \vec{p}_i}{\|\vec{p}_{i+1} - \vec{p}_i\|}
+\end{equation*}
+
+\vspace{0.2cm}
+\textbf{Wyprowadzenie czasu zbieżności:}
+\begin{enumerate}
+    \item Kąt środkowy między sąsiednimi agentami: $\alpha = \frac{2\pi}{n}$
+    \item Kierunek ruchu agenta $i$ tworzy z promieniem kąt: $\theta = \frac{\pi}{2} - \frac{\alpha}{2} = \frac{\pi}{2} - \frac{\pi}{n}$
+    \item Składowa prędkości ku centrum: $v_r = v \cdot \cos\theta = v \cdot \sin\left(\frac{\pi}{n}\right)$
+    \item Czas zbieżności: $T = \frac{R}{v_r} = \frac{R}{v \cdot \sin(\pi/n)}$
+\end{enumerate}
+\end{frame}
+
+\begin{frame}{Pościg cykliczny -- wyniki liczbowe}
+\centering
+\tablefontsize
+\begin{tabular}{@{}llll@{}}
+\toprule
+\textbf{Liczba agentów $n$} & \textbf{$T_{\text{theory}}$ [R/v]} & \textbf{$T_{\text{numerical}}$ [R/v]} & \textbf{Błąd względny [\%]} \\ \midrule
+$3$ & $1.155$ & $1.153 \pm 0.01$ & $0.12$ \\
+$4$ & $1.414$ & $1.412 \pm 0.01$ & $0.14$ \\
+$6$ & $2.000$ & $1.996 \pm 0.01$ & $0.20$ \\
+$12$ & $3.864$ & $3.849 \pm 0.01$ & $0.39$ \\
+$18$ & $5.759$ & $5.726 \pm 0.01$ & $0.58$ \\ \bottomrule
+\end{tabular}
+
+\vspace{0.5cm}
+\normalsize
+\textbf{Uwaga:} Błąd wynika z warunku stopu symulacji (odległość $< 0.01$ m).
+
+\vspace{0.2cm}
+\textbf{Asymptotycznie:} $\lim_{n \to \infty} T_{\text{conv}}(n) = R/v$
+\end{frame}
+
+\begin{frame}{Pościg cykliczny -- wizualizacja}
+\centering
+\includegraphics[width=0.9\textwidth]{cyclic_pursuit.pdf}
+\end{frame}
+
+% ============================================
+\section{Rozszerzenia geometryczne}
+% ============================================
+
+\begin{frame}{Pościg w 3D -- trajektoria helisoidalna (Direct Pursuit)}
+\textbf{Helisa:}
+\begin{equation*}
+\vec{t}(t) = [r\cos(\omega t), r\sin(\omega t), v_z \cdot t]^T
+\end{equation*}
+
+\vspace{0.3cm}
+Parametry: pozycja startowa ścigającego $(8, 0, 2)$, $r = 3$ m, $\omega = 0.4$ rad/s, $v_p = 2.5$ m/s
+
+\vspace{0.3cm}
+\centering
+\tablefontsize
+\begin{tabular}{@{}lll@{}}
+\toprule
+\textbf{Prędkość pionowa $v_z$ [m/s]} & \textbf{Czas przechwycenia [s]} & \textbf{Długość trajektorii [m]} \\ \midrule
+$0.0$ (okrąg) & $3.29$ & $8.23$ \\
+$0.5$ & $3.25$ & $8.14$ \\
+$1.0$ & $3.71$ & $9.21$ \\
+$1.5$ & $7.39$ & $17.07$ \\
+$2.0$ & $15.49$ & $38.45$ \\ \bottomrule
+\end{tabular}
+\end{frame}
+
+\begin{frame}{Pościg 3D -- helisa -- wizualizacja (Direct Pursuit)}
+\begin{columns}[c]
+\begin{column}{0.7\textwidth}
+\centering
+\includegraphics[height=0.82\textheight]{helix_pursuit_3d.pdf}
+\end{column}
+\begin{column}{0.3\textwidth}
+\small
+\textbf{Legenda:}
+\begin{itemize}
+    \item[\textcolor{blue}{$\bullet$}] Start ścigającego
+    \item[\textcolor{red}{$\blacksquare$}] Start celu
+    \item[$\bigstar$] Punkty przechwycenia
+    \item[\textcolor{gray}{---}] Pełna trajektoria celu
+    \item[---] Trajektoria ścigającego
+\end{itemize}
+
+\vspace{0.3cm}
+\textbf{Obserwacje:}\\
+Szare linie pokazują pełne trajektorie helis (celu), a gwiazdki wskazują gdzie nastąpiło przechwycenie.
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Krzywe Lissajous w 3D (Direct Pursuit)}
+\textbf{Trajektoria:}
+\begin{equation*}
+\vec{t}(t) = [A_x \sin(\omega_x t), A_y \sin(\omega_y t), A_z \sin(\omega_z t)]^T
+\end{equation*}
+
+\vspace{0.2cm}
+\textbf{Warunek wystarczający przechwycenia:}
+\begin{equation*}
+v_p > v_{t,\max} = \sqrt{(A_x \omega_x)^2 + (A_y \omega_y)^2 + (A_z \omega_z)^2}
+\end{equation*}
+
+\vspace{0.2cm}
+\centering
+\tablefontsize
+\begin{tabular}{@{}llll@{}}
+\toprule
+\textbf{$\omega_x : \omega_y : \omega_z$} & \textbf{$v_{t,\max}$} & \textbf{Czas [s]} & \textbf{Długość [m]} \\ \midrule
+$1:1:1$ & $5.20$ & $1.22$ & $3.66$ \\
+$1:2:1$ & $7.35$ & $>30$ & $89.97$ \\
+$2:3:5$ & $18.49$ & $>30$ & $89.79$ \\ \bottomrule
+\end{tabular}
+
+\vspace{0.2cm}
+\normalsize
+\textbf{Wniosek:} Dla $1{:}1{:}1$ cel oscyluje liniowo -- przechwycenie w punkcie zwrotnym ($v_t = 0$).
+\end{frame}
+
+\begin{frame}{Krzywe Lissajous -- wizualizacja (Direct Pursuit)}
+\centering
+\includegraphics[width=0.9\textwidth]{lissajous_pursuit_3d.pdf}
+\end{frame}
+
+\begin{frame}{Pościg na sferze $S^2$ (Direct Pursuit)}
+\small
+Operujemy we \textbf{współrzędnych sferycznych} $(\theta, \phi)$, nie kartezjańskich:
+\begin{itemize}
+    \item $\theta \in [0, \pi]$ -- kąt polarny (od bieguna północnego)
+    \item $\phi \in [0, 2\pi)$ -- kąt azymutalny (długość geograficzna)
+\end{itemize}
+
+\vspace{0.2cm}
+\textbf{Metryka riemannowska:}
+\begin{equation*}
+ds^2 = R^2 d\theta^2 + R^2 \sin^2\theta \, d\phi^2
+\end{equation*}
+
+\vspace{0.3cm}
+\textbf{Odległość kątowa:}
+\begin{equation*}
+d_{\text{angular}} = \arccos(\sin\theta_p \sin\theta_t + \cos\theta_p \cos\theta_t \cos(\phi_t - \phi_p))
+\end{equation*}
+
+\vspace{0.2cm}
+\centering
+\tablefontsize
+\begin{tabular}{@{}ccc@{}}
+\toprule
+\textbf{Prędkość $v_p/v_t$} & \textbf{Czas pościgu [s]} & \textbf{Długość trajektorii [rad]} \\ \midrule
+$1.5$ & $1.04$ & $1.19$ \\
+$2.0$ & $0.83$ & $1.26$ \\
+$3.0$ & $0.60$ & $1.34$ \\ \bottomrule
+\end{tabular}
+
+\vspace{0.1cm}
+\tiny $R=5$, $\dot{\theta}_t = 0.1$, $\dot{\phi}_t = \pi/4$ rad/s. Start: $d_0 = 1.87$ rad.
+\end{frame}
+
+\begin{frame}{Pościg na sferze -- wizualizacja (Direct Pursuit)}
+\centering
+\includegraphics[width=0.85\textwidth]{sphere_pursuit_3d.pdf}
+\end{frame}
+
+\begin{frame}{Pościg na torusie (Direct Pursuit)}
+\small
+Operujemy we \textbf{współrzędnych toroidalnych} $(u, v)$:
+\begin{itemize}
+    \item $u \in [0, 2\pi)$ -- kąt wokół głównej osi torusa
+    \item $v \in [0, 2\pi)$ -- kąt wokół rurki
+\end{itemize}
+
+\vspace{0.2cm}
+\textbf{Metryka riemannowska:}
+\begin{equation*}
+ds^2 = (R + r\cos v)^2 du^2 + r^2 dv^2
+\end{equation*}
+
+\vspace{0.2cm}
+\centering
+\tablefontsize
+\begin{tabular}{@{}ccc@{}}
+\toprule
+\textbf{Prędkość $v_p$} & \textbf{Stosunek $v_p/v_t$} & \textbf{Czas [s]} \\ \midrule
+$1.5$ & $1.21$ & $4.64$ \\
+$2.0$ & $1.62$ & $11.03$ \\
+$2.5$ & $2.02$ & $7.16$ \\
+$3.0$ & $2.43$ & $5.50$ \\ \bottomrule
+\end{tabular}
+
+\vspace{0.1cm}
+\tiny $R=3$, $r=1.2$, $\omega_u = 0.4$, $\omega_v = 0.3$ rad/s.
+\end{frame}
+
+\begin{frame}{Pościg na torusie -- wizualizacja}
+\centering
+\includegraphics[width=0.85\textwidth]{torus_pursuit_3d.pdf}
+\end{frame}
+
+\begin{frame}{Podejście ciągłe vs. dyskretne}
+\textbf{Ciągłe} (\texttt{scipy.integrate.solve\_ivp}):
+\begin{itemize}
+    \item Adaptacyjny krok czasowy
+    \item Kontrola błędu (tolerancje względne i bezwzględne)
+    \item Detekcja zdarzeń (przechwycenie celu)
+\end{itemize}
+
+\vspace{0.4cm}
+\textbf{Dyskretne} (iteracja z krokiem $\Delta t$):
+\begin{equation*}
+\vec{p}_{k+1} = \vec{p}_k + \Delta t \cdot \vec{v}_p(\vec{p}_k, \vec{t}_k)
+\end{equation*}
+
+\vspace{0.3cm}
+Im mniejszy $\Delta t$, tym trajektoria bliższa rozwiązaniu ciągłemu.
+\end{frame}
+
+\begin{frame}{Ciągłe vs. dyskretne -- wizualizacja}
+\centering
+\includegraphics[height=0.85\textheight]{discrete_vs_continuous.pdf}
+\end{frame}
+
+% ============================================
+\section{Implementacja}
+% ============================================
+
+\begin{frame}{Architektura projektu}
+\textbf{Technologie:}
+\begin{itemize}
+    \item Python 3.12+
+    \item NumPy -- operacje wektorowe
+    \item SciPy -- \texttt{solve\_ivp} (Runge-Kutta z adaptacyjnym krokiem)
+    \item Matplotlib -- wizualizacje 2D/3D
+\end{itemize}
+
+\vspace{0.4cm}
+\textbf{Struktura modułów:}
+\begin{columns}
+\begin{column}{0.5\textwidth}
+\begin{itemize}
+    \item \texttt{common/} -- klasy bazowe, symulacja
+    \item \texttt{d2/} -- strategie 2D
+    \item \texttt{d3/} -- strategie 3D
+\end{itemize}
+\end{column}
+\begin{column}{0.5\textwidth}
+\begin{itemize}
+    \item \texttt{dn/} -- n-wymiarowe
+    \item \texttt{sphere/} -- sfera $S^2$
+    \item \texttt{torus/} -- torus
+\end{itemize}
+\end{column}
+\end{columns}
+\end{frame}
+
+
+% ============================================
+\section{Wnioski}
+% ============================================
+
+\begin{frame}{Podsumowanie wyników}
+\textbf{Porównanie strategii:}
+\begin{itemize}
+    \item \textbf{Direct Pursuit} -- najkrótsze trajektorie, prosty w implementacji
+    \item \textbf{Proportional Navigation} ($N \in [3,4]$) -- najlepszy kompromis efektywność/stabilność
+    \item \textbf{Constant Bearing} -- spirale logarytmiczne, najmniej efektywny
+\end{itemize}
+
+\vspace{0.4cm}
+\textbf{Wymiar przestrzeni:}
+\begin{itemize}
+    \item Czas przechwycenia \textbf{niezależny od wymiaru} (dla ruchu jednoosiowego)
+    \item Zweryfikowano numerycznie dla $n \leq 20$
+\end{itemize}
+
+\vspace{0.4cm}
+\textbf{Geometria riemannowska (sfera $S^2$, torus):}
+\begin{itemize}
+    \item Pościg we współrzędnych krzywoliniowych $(\theta, \phi)$ i $(u, v)$
+    \item Metryka definiuje odległość geodezyjną i kierunek pościgu
+    \item Na torusie: nieliniowa zależność czasu od prędkości ścigającego
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\centering
+\vspace{2cm}
+{\Huge Dziękujemy za uwagę!}
+\end{frame}
+
+\end{document}

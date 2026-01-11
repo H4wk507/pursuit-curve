@@ -511,23 +511,6 @@ Direct Pursuit & -- & $1.0$ (baseline) & Stabilna \\
 \label{fig:strategy_linear}
 \end{figure}
 
-\subsubsection{Analiza parametru kąta namiarowania}
-
-Dla strategii stałego namiarowania, wpływ kąta $\beta$ na wydłużenie trajektorii można aproksymować funkcją:
-\begin{equation}
-L_{\text{ratio}}(\beta) \approx 1 + 0.307 \tan(\beta) + 0.150 \tan^2(\beta)
-\label{eq:bearing_angle_effect}
-\end{equation}
-
-Ta zależność jest ważna dla $|\beta| < 60°$ i wykazuje dobrą zgodność z wynikami numerycznymi ($R^2 = 0.999$).
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=0.95\textwidth]{bearing_angle_effect.pdf}
-\caption{Wpływ kąta namiarowania $\beta$ na trajektorię (lewo) oraz względne wydłużenie trajektorii w funkcji kąta (prawo). Linia przerywana pokazuje dopasowanie analityczne.}
-\label{fig:bearing_angle}
-\end{figure}
-
 \subsection{Pościg 2D -- Proportional Navigation}
 
 Strategia nawigacji proporcjonalnej, szeroko stosowana w naprowadzaniu pocisków, charakteryzuje się tym, że prędkość kątowa ścigającego jest proporcjonalna do prędkości kątowej linii wzroku (Line-Of-Sight).
@@ -579,6 +562,16 @@ Dla $n$ agentów rozmieszczonych na regularnym wielokącie o promieniu $R$, teor
 T_{\text{conv}}^{\text{theory}}(n) = \frac{R}{v} \cdot \frac{1}{\sin(\pi/n)}
 \label{eq:theoretical_convergence}
 \end{equation}
+
+\textbf{Wyprowadzenie wzoru:} Jest to klasyczny wynik znany jako ,,problem $n$ myszy'' (ang. \textit{n-bug problem}). Rozważmy $n$ agentów ustawionych na wierzchołkach foremnego $n$-kąta wpisanego w okrąg o promieniu $R$. Każdy agent goni następnego z prędkością $v$.
+
+\begin{enumerate}
+    \item Kąt wewnętrzny foremnego $n$-kąta wynosi $\alpha = \frac{(n-2)\pi}{n}$.
+    \item Kąt między kierunkiem ruchu agenta (w stronę następnego) a promieniem prowadzącym do środka wynosi $\gamma = \frac{\pi}{2} - \frac{\pi}{n}$.
+    \item Ze względu na symetrię układu, każdy agent porusza się po spirali logarytmicznej do wspólnego centrum.
+    \item Składowa prędkości w kierunku do centrum (radialna) wynosi: $v_r = v \cdot \cos(\gamma) = v \cdot \cos\left(\frac{\pi}{2} - \frac{\pi}{n}\right) = v \cdot \sin\left(\frac{\pi}{n}\right)$.
+    \item Czas potrzebny do pokonania dystansu $R$ przy prędkości radialnej $v_r$ wynosi: $T = \frac{R}{v_r} = \frac{R}{v \cdot \sin(\pi/n)}$.
+\end{enumerate}
 
 \begin{table}[H]
 \centering
