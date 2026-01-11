@@ -10,7 +10,7 @@ from pathlib import Path
 import numpy as np
 from scipy.integrate._ivp.ivp import OdeResult
 
-sys.path.insert(0, str(Path(__file__).parent.parent))
+sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 from pursuit_curve.common import Point2D, Point3D, PointND, run_continuous_simulation
 from pursuit_curve.d2.continuous import (

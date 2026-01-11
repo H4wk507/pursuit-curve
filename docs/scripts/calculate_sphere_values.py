@@ -8,7 +8,7 @@ from pathlib import Path
 
 import numpy as np
 
-sys.path.insert(0, str(Path(__file__).parent.parent))
+sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 from pursuit_curve.common import run_continuous_simulation
 from pursuit_curve.sphere.continuous import ContinuousDirectPursuitSphere, ContinuousTargetSphereStrategy

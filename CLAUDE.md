@@ -15,8 +15,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Clean cache**: `make clean` (removes __pycache__, .mypy_cache, .ruff_cache)
 
 ### Documentation
-- **Build LaTeX docs**: `make tex` (compiles dokumentacja.tex to PDF)
-- **Build LaTeX prezentation**: `make prez` (compiles prezentacja.tex to PDF)
+- **Build LaTeX docs**: `make tex` (compiles docs/dokumentacja.tex to PDF)
+- **Build LaTeX presentation**: `make prez` (compiles docs/prezentacja.tex to PDF)
 
 ## Project Architecture
 
