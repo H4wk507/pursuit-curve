@@ -501,26 +501,28 @@ Parametry: $v_p = 6.0$ m/s, $r = 5$ m, $\omega = 0.5$ rad/s
 % ============================================
 
 \begin{frame}{Podsumowanie wyników}
+\small
+\setlength{\itemsep}{2pt}
 \textbf{Porównanie strategii:}
-\begin{itemize}
-    \item \textbf{Direct Pursuit} - najkrótsze trajektorie, prosty w implementacji
-    \item \textbf{Proportional Navigation} ($N \in [3,4]$) - najlepszy kompromis efektywność/stabilność
-    \item \textbf{Constant Bearing} - spirale logarytmiczne, najmniej efektywny
+\begin{itemize}\setlength{\itemsep}{1pt}
+    \item \textbf{Direct Pursuit} - prosty w implementacji, gwarantuje przechwycenie gdy $v_p > v_t$
+    \item \textbf{Proportional Navigation} - najkrótsze trajektorie ($\sim$1\% krótsze niż DP), standard w naprowadzaniu pocisków
+    \item \textbf{Constant Bearing} - spirale logarytmiczne, wydłużenie trajektorii 10-120\% zależnie od $\beta$
 \end{itemize}
 
-\vspace{0.4cm}
+\vspace{-0.1cm}
 \textbf{Wymiar przestrzeni:}
-\begin{itemize}
-    \item Czas przechwycenia \textbf{niezależny od wymiaru} (dla ruchu jednoosiowego)
-    \item Zweryfikowano numerycznie dla $n \leq 20$
+\begin{itemize}\setlength{\itemsep}{1pt}
+    \item Równanie pościgu bezpośredniego jest \textbf{uniwersalne} - identyczna formuła dla $\mathbb{R}^2$, ..., $\mathbb{R}^n$
+    \item Warunek zbieżności $v_p > v_t$ zachowuje się niezależnie od wymiaru
 \end{itemize}
 
-\vspace{0.4cm}
+\vspace{-0.1cm}
 \textbf{Geometria riemannowska (sfera $S^2$, torus):}
-\begin{itemize}
-    \item Pościg we współrzędnych krzywoliniowych $(\theta, \phi)$ i $(u, v)$
-    \item Metryka definiuje odległość geodezyjną i kierunek pościgu
-    \item Na torusie: nieliniowa zależność czasu od prędkości ścigającego
+\begin{itemize}\setlength{\itemsep}{1pt}
+    \item Na sferze: szybszy ścigający pokonuje \textbf{dłuższą} trajektorię (efekt krzywizny)
+    \item Na torusie: zależność czasu od $v_p$ jest \textbf{niemonotoniczna} ($v_p = 2.0$ gorsze niż $v_p = 1.5$)
+    \item Krzywizna przestrzeni fundamentalnie zmienia dynamikę pościgu względem przestrzeni euklidesowej
 \end{itemize}
 \end{frame}
 
