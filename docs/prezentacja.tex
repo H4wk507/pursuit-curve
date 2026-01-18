@@ -188,9 +188,9 @@ Parametry: $v_p = 2.0$ m/s, $\vec{v}_t = (0.8, 0.6)$ m/s
 \toprule
 \textbf{Stosunek $\rho = v_p/v_t$} & \textbf{Czas zbieżności} & \textbf{Status} \\ \midrule
 $\rho < 1.0$ & $\infty$ & Brak przechwycenia \\
-$\rho = 1.1$ & $0.81 \cdot T_{\text{orbit}}$ & Powolna zbieżność \\
-$\rho = 1.5$ & $0.35 \cdot T_{\text{orbit}}$ & Efektywne przechwycenie \\
-$\rho = 2.0$ & $0.19 \cdot T_{\text{orbit}}$ & Szybkie przechwycenie \\
+$\rho = 1.1$ & $1.01 \cdot T_{\text{orbit}}$ & Powolna zbieżność \\
+$\rho = 1.5$ & $0.39 \cdot T_{\text{orbit}}$ & Efektywne przechwycenie \\
+$\rho = 2.0$ & $0.21 \cdot T_{\text{orbit}}$ & Szybkie przechwycenie \\
 $\rho \gg 1$ & $\approx d_0/v_p$ & Zbieżność do ruchu prostoliniowego \\ \bottomrule
 \end{tabular}
 
@@ -506,7 +506,7 @@ Parametry: $v_p = 6.0$ m/s, $r = 5$ m, $\omega = 0.5$ rad/s
 \textbf{Porównanie strategii:}
 \begin{itemize}\setlength{\itemsep}{1pt}
     \item \textbf{Direct Pursuit} - prosty w implementacji, gwarantuje przechwycenie gdy $v_p > v_t$
-    \item \textbf{Proportional Navigation} - najkrótsze trajektorie ($\sim$1\% krótsze niż DP), standard w naprowadzaniu pocisków
+    \item \textbf{Proportional Navigation} - najkrótsze trajektorie, standard w naprowadzaniu pocisków
     \item \textbf{Constant Bearing} - spirale logarytmiczne, wydłużenie trajektorii 10-120\% zależnie od $\beta$
 \end{itemize}
 
