@@ -450,9 +450,9 @@ Analizowano zachowanie układu w funkcji stosunku prędkości $\rho = v_p/v_t$:
 \toprule
 \textbf{Stosunek $\rho = v_p/v_t$} & \textbf{Czas zbieżności} & \textbf{Status} \\ \midrule
 $\rho < 1.0$ & $\infty$ & Brak przechwycenia \\
-$\rho = 1.1$ & $0.81 \cdot T_{\text{orbit}}$ & Powolna zbieżność \\
-$\rho = 1.5$ & $0.35 \cdot T_{\text{orbit}}$ & Efektywne przechwycenie \\
-$\rho = 2.0$ & $0.19 \cdot T_{\text{orbit}}$ & Szybkie przechwycenie \\
+$\rho = 1.1$ & $1.01 \cdot T_{\text{orbit}}$ & Powolna zbieżność \\
+$\rho = 1.5$ & $0.39 \cdot T_{\text{orbit}}$ & Efektywne przechwycenie \\
+$\rho = 2.0$ & $0.21 \cdot T_{\text{orbit}}$ & Szybkie przechwycenie \\
 $\rho \gg 1$ & $\approx d_0/v_p$ & Zbieżność do ruchu prostoliniowego \\ \bottomrule
 \end{tabular}
 \end{table}
@@ -604,14 +604,6 @@ Błąd numeryczny wynika z warunku stopu symulacji (odległość między agentam
 \label{fig:cyclic_pursuit}
 \end{figure}
 
-\subsubsection{Asymptotyczne zachowanie}
-Dla dużej liczby agentów ($n \gg 1$), czas zbieżności asymptotycznie dąży do:
-\begin{equation}
-\lim_{n \to \infty} T_{\text{conv}}(n) = \frac{R}{v}
-\end{equation}
-
-co odpowiada czasowi potrzebnemu do przejścia odległości równej promieniu ze stałą prędkością.
-
 \subsection{Pościg 3D - Helix Target}
 
 Analizowano pościg bezpośredni dla celu poruszającego się po trajektorii helisoidalnej. Helisa parametryzowana jest równaniami:
@@ -704,31 +696,28 @@ Obserwacje:
 
 Zbadano zachowanie pościgu bezpośredniego w przestrzeniach $\mathbb{R}^n$ dla $n \in \{2, 3, 4, 5, 10, 20\}$.
 
-\subsubsection{Niezależność od wymiaru dla ruchu jednoosiowego}
+\subsubsection{Uniwersalność równania pościgu bezpośredniego}
 
-Kluczowa obserwacja: gdy cel porusza się wzdłuż jednej osi, czas przechwycenia jest \textbf{niezależny od wymiaru przestrzeni}. Wynika to z faktu, że pościg bezpośredni zawsze kieruje ścigającego wprost na cel - dodatkowe wymiary nie wpływają na dynamikę, gdy ruch odbywa się w podprzestrzeni jednowymiarowej.
-
-Dla konfiguracji testowej:
-\begin{itemize}
-    \item Ścigający startuje w punkcie $(r_0, 0, 0, \ldots) \in \mathbb{R}^n$, gdzie $r_0 = 5$ m
-    \item Cel startuje w początku układu $(0, 0, 0, \ldots)$
-    \item Cel porusza się wzdłuż pierwszej osi z prędkością $v_t = 0.5$ m/s
-    \item Prędkość ścigającego: $v_p = 2.0$ m/s
-\end{itemize}
-
-Czas przechwycenia dla wszystkich wymiarów $n \geq 2$:
+Równanie pościgu bezpośredniego ma identyczną postać dla dowolnego wymiaru $n \geq 2$:
 \begin{equation}
-T_{\text{catch}} = \frac{r_0 - d_{\text{threshold}}}{v_p + v_t} = \frac{5.0 - 0.5}{2.0 + 0.5} = 1.8 \text{ s}
+\frac{d\vec{p}}{dt} = v_p \cdot \frac{\vec{t} - \vec{p}}{\|\vec{t} - \vec{p}\|_2}, \quad \vec{p}, \vec{t} \in \mathbb{R}^n
 \end{equation}
 
-Znak $+$ w mianowniku wynika z faktu, że cel porusza się \textit{w kierunku} ścigającego (z $x=0$ w stronę $x=5$).
-
-\subsubsection{Wnioski}
-
-Implementacja n-wymiarowa ($n \leq 20$) została zweryfikowana numerycznie. Wyniki potwierdzają, że:
+Ta uniwersalność wynika z faktu, że:
 \begin{itemize}
-    \item Algorytm pościgu bezpośredniego poprawnie generalizuje się na dowolny wymiar
-    \item Czas przechwycenia zależy wyłącznie od geometrii problemu (odległość, prędkości), nie od wymiaru przestrzeni otaczającej
+    \item Norma euklidesowa $\|\cdot\|_2$ naturalnie generalizuje się na dowolny wymiar
+    \item Wektor jednostkowy $(\vec{t} - \vec{p})/\|\vec{t} - \vec{p}\|_2$ zawsze wskazuje kierunek do celu
+    \item Nie ma potrzeby modyfikacji algorytmu przy zmianie wymiaru przestrzeni
+\end{itemize}
+
+\subsubsection{Zachowanie warunku zbieżności}
+
+Warunek konieczny przechwycenia $v_p > v_t$ jest \textbf{niezmienniczy względem wymiaru}. Niezależnie od tego, czy pościg odbywa się w $\mathbb{R}^2$ czy $\mathbb{R}^{20}$, ścigający musi być szybszy od celu, aby zagwarantować przechwycenie.
+
+Weryfikacja numeryczna dla $n \leq 20$ potwierdziła, że:
+\begin{itemize}
+    \item Trajektorie w wyższych wymiarach zachowują te same właściwości jakościowe co w 2D/3D
+    \item Czas przechwycenia zależy wyłącznie od geometrii problemu (odległości, prędkości, trajektorii celu), nie od wymiaru przestrzeni otaczającej
 \end{itemize}
 
 \subsection{Pościg na sferze $S^2$}
@@ -792,24 +781,24 @@ Obserwacja: Na torusie występuje nieliniowa zależność czasu przechwycenia od
 
 Analiza numeryczna wykazała, że:
 \begin{itemize}
-    \item \textbf{Direct Pursuit} - najkrótsze trajektorie, prosty w implementacji
-    \item \textbf{Proportional Navigation} ($N \in [3,4]$) - najlepszy kompromis efektywność/stabilność
-    \item \textbf{Constant Bearing} - spirale logarytmiczne, najmniej efektywny
+    \item \textbf{Direct Pursuit} - prosty w implementacji, gwarantuje przechwycenie gdy $v_p > v_t$
+    \item \textbf{Proportional Navigation} - najkrótsze trajektorie, standard w naprowadzaniu pocisków
+    \item \textbf{Constant Bearing} - spirale logarytmiczne, wydłużenie trajektorii 10-120\% zależnie od $\beta$
 \end{itemize}
 
 \subsection{Wpływ wymiaru przestrzeni}
 
 \begin{itemize}
-    \item Czas przechwycenia \textbf{niezależny od wymiaru} (dla ruchu jednoosiowego)
-    \item Zweryfikowano numerycznie dla $n \leq 20$
+    \item Równanie pościgu bezpośredniego jest \textbf{uniwersalne} - identyczna formuła dla $\mathbb{R}^2, \ldots, \mathbb{R}^n$
+    \item Warunek zbieżności $v_p > v_t$ zachowuje się niezależnie od wymiaru
 \end{itemize}
 
 \subsection{Geometria riemannowska (sfera $S^2$, torus)}
 
 \begin{itemize}
-    \item Pościg we współrzędnych krzywoliniowych $(\theta, \phi)$ i $(u, v)$
-    \item Metryka definiuje odległość geodezyjną i kierunek pościgu
-    \item Na torusie: nieliniowa zależność czasu od prędkości ścigającego
+    \item Na sferze: szybszy ścigający pokonuje \textbf{dłuższą} trajektorię (efekt krzywizny)
+    \item Na torusie: zależność czasu od $v_p$ jest \textbf{niemonotoniczna} ($v_p = 2.0$ gorsze niż $v_p = 1.5$)
+    \item Krzywizna przestrzeni fundamentalnie zmienia dynamikę pościgu względem przestrzeni euklidesowej
 \end{itemize}
 
 \section*{Literatura}
